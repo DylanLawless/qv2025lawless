@@ -1,0 +1,133 @@
+ 
+\documentclass{article}
+\usepackage[document]{ragged2e}
+\usepackage{arxiv} % arxiv.sty
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+% \usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{lipsum}         % Can be removed after putting your text content
+\usepackage{graphicx}
+\usepackage{natbib}
+\usepackage{doi}
+\usepackage{tcolorbox} % most option loads most of the libraries
+%\tcbuselibrary{skins, breakable}
+
+% \usepackage[edges]{forest} % Use the 'edges' library for nice edge paths
+
+\usepackage{setspace} % line spacing
+  \setstretch{1.4}
+\title{Conceptualising qualifying variants for genomic analysis}
+
+% Here you can change the date presented in the paper title
+%\date{September 9, 1985}
+% Or remove it
+%\date{}
+
+\newif\ifuniqueAffiliation
+% Comment to use multiple affiliations variant of author block 
+\uniqueAffiliationtrue
+
+\ifuniqueAffiliation % Standard variant of author block
+\author{ \href{https://orcid.org/0000-0001-8496-3725}{\includegraphics[scale=0.06]{orcid.pdf}\hspace{1mm}Dylan Lawless}
+%\thanks{%foot for other info}
+ \\
+	Department of Intensive Care and Neonatology,\\
+	University Children’s Hospital Zürich,\\
+	University of Zürich,\\
+	Zürich, Switzerland \\
+	\texttt{dylan.lawless(at)uzh.kispi.ch} \\
+	%% examples of more authors
+%	\And
+%	\href{https://orcid.org/0000-0000-0000-0000}{\includegraphics[scale=0.06]{orcid.pdf}\hspace{1mm}Elias D.~Striatum} \\
+%	Department of Electrical Engineering\\
+%	Mount-Sheikh University\\
+%	Santa Narimana, Levand \\
+%	\texttt{stariate@ee.mount-sheikh.edu} \\
+	%% \AND
+	%% Coauthor \\
+	%% Affiliation \\
+	%% Address \\
+	%% \texttt{email} \\
+	%% \And
+	%% Coauthor \\
+	%% Affiliation \\
+	%% Address \\
+	%% \texttt{email} \\
+	%% \And
+	%% Coauthor \\
+	%% Affiliation \\
+	%% Address \\
+	%% \texttt{email} \\
+}
+\else
+% Multiple affiliations variant of author block
+\usepackage{authblk}
+\renewcommand\Authfont{\bfseries}
+\setlength{\affilsep}{0em}
+% box is needed for correct spacing with authblk
+\newbox{\orcid}\sbox{\orcid}{\includegraphics[scale=0.06]{orcid.pdf}} 
+\author[1]{%
+	\href{https://orcid.org/0000-0001-8496-3725}{\usebox{\orcid}\hspace{1mm}Dylan Lawless\thanks{\texttt{dylan.lawless(at)kispi.uzh.ch}}}%
+}
+%\author[1,2]{%
+%	\href{https://orcid.org/0000-0000-0000-0000}{\usebox{\orcid}\hspace{1mm}Elias D.~Striatum\thanks{\texttt{stariate@ee.mount-sheikh.edu}}}%
+%}
+\affil[1]{Department of Intensive Care and Neonatology and Children's Research Centre, University Children’s Hospital Zurich, University of Zürich, Zürich, Switzerland}
+%\affil[2]{Department of Electrical Engineering, Mount-Sheikh University, Santa Narimana, Levand}
+\fi
+
+% Uncomment to override  the `A preprint' in the header
+%\renewcommand{\headeright}{Technical Report}
+%\renewcommand{\undertitle}{Technical Report}
+\renewcommand{\shorttitle}{QV in genomics}
+
+
+% Custom 
+\usepackage{xcolor} % Custom colors
+\definecolor{kispiblue}{HTML}{701A57}
+% City sunset: https://www.color-hex.com/color-palette/40131
+\definecolor{colorSUNSET1}{HTML}{eeaf61}
+\definecolor{colorSUNSET2}{HTML}{fb9062}
+\definecolor{colorSUNSET3}{HTML}{ee5d6c}
+\definecolor{colorSUNSET4}{HTML}{ce4993}
+\definecolor{colorSUNSET5}{HTML}{6a0d83}
+\definecolor{natureblue}{RGB}{5,110,210}    
+\usepackage{dirtree}  % Load the dirtree package
+
+%%% Add PDF metadata to help others organize their library
+%%% Once the PDF is generated, you can check the metadata with
+%%% $ pdfinfo template.pdf
+\usepackage{cleveref}       % smart cross-referencing
+\usepackage[]{hyperref}
+\AtBeginDocument{%this allows colours to chage from the defined elsearticle template.
+\hypersetup{
+    pdftitle={Conceptualising qualifying variants for genomic analysis},
+    pdfsubject={genomics},
+    pdfauthor={Dylan Lawless},
+    pdfkeywords={First keyword, Second keyword, More},
+    	colorlinks=true,
+    linkcolor=blue,
+     urlcolor=cyan,
+     backref=true,       
+                    pagebackref=true,               
+                    hyperindex=true,                
+                    colorlinks=true,                
+                    breaklinks=true,                
+                    urlcolor= blue,                          
+                    bookmarks=true,                 
+                    bookmarksopen=false,
+                    citecolor=blue,
+                    linkcolor=blue,
+                    filecolor=blue,
+                    linkbordercolor=blue,
+                    	}}
+
+\usepackage{fontspec}
+%\defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+\setmainfont{Source Sans Pro--Light}[BoldFont={Source Sans Pro-Regular}, ItalicFont={Source Sans Pro-Light-Italic},]
