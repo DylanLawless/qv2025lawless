@@ -7,6 +7,18 @@
 % \linenumbers
 %\raggedright
 
+\newcounter{myboxcounter}
+\newcommand{\boxlabel}[1]{%
+  \refstepcounter{myboxcounter}%
+  \label{#1}%
+}
+
+
+
+%\textbf{box~\ref{def:VariantOutcomesDetailed}}.
+%\begin{definition}[label=def:VariantOutcomesDetailed]
+%\end{definition}\\
+
 \title{Conceptualising qualifying variants for genomic analysis}
 
 \author[1]{Dylan Lawless\thanks{Addresses for correspondence: \href{mailto:Dylan.Lawless@uzh.ch}{Dylan.Lawless@uzh.ch}}}
@@ -16,9 +28,9 @@
 \affil[1]{Department of Intensive Care and Neonatology and Children’s Research Centre, University Children's Hospital Zurich, University of Zurich, Zurich, Switzerland.}
 \affil[2]{Global Health Institute, School of Life Sciences, École Polytechnique Fédérale de Lausanne, Switzerland.}
 
+\begin{small}
 \maketitle
 \justify
-\begin{small}
 \tableofcontents
 % \listoffigures
 % \listoftables
@@ -32,7 +44,8 @@
   \acro{wgs}[WGS]{Whole Genome Sequencing}
 \end{acronym}
 \end{small}
-
+ 
+\clearpage
 \begin{abstract}
 \ac{qv}s  represent specific genomic alterations selected through defined criteria throughout processing pipelines, essential for downstream analyses in genetic research and clinical diagnostics. 
 Here we explore \ac{qv}s not just as simple filtering criteria but as a dynamic, multifaceted concept crucial across various genomic analysis scenarios. 
@@ -72,7 +85,8 @@ For instance, \ac{gwas} might prioritise common variants,
 variant set association test (VSAT) might prioritise rare variant collapse, 
 and clinical genetic reports may focus on rare or novel variants. 
 Therefore, \ac{qv}s are categorised by the extent and nature of the filtering or quality control they undergo, tailored to the research or clinical requirements. 
-\citet{povysil2019rare} provide a tangible example of \ac{qv} for variant collapsing analyses for complex traits.
+\citet{povysil2019rare} previously provided a tangible example of \ac{qv} for variant collapsing analyses for complex traits. 
+However, a standardised framework for presenting \ac{qv} themselves remains missing. 
 We detail three typical applications of \ac{qv} sets:
 
 \begin{enumerate}
@@ -87,7 +101,7 @@ Variants within these genes can be categorised based on their potential pathogen
 In \ac{gwas}, \ac{qv}s generally refer to consensus variants that have undergone standard quality control procedures to ensure their statistical suitability for the main analysis.
 Rigorous \ac{qv} selection and categorisation in genetic research and diagnostics to accurately report and reproduce such studies, particularly since the the \ac{qv} criteria may be more important than the choice of analysis pipeline. 
 
-\textbf{Figure \ref{fig:pipeline_figure}} 
+\textbf{Figure \ref{fig:qv_pipeline_with_file_vcurrent}} 
 demonstrates a typical WGS and \ac{vsat} analysis pipeline, showing \ac{qv}s as sequential and potentially piped protocol steps.
 The common approach to representing \ac{qv} steps are illustrated in 
 \textbf{figure \ref{fig:qv_filter_pyramid_vcurrent}}.
@@ -96,12 +110,13 @@ This style simplifies the variant filtering process where each layer may arise f
 \ref{fig:qv_structure_vcurrent}}
 shows the structural framework of a variant's features that may trigger specific \ac{qv} protocols, highlighting both pre-existing metadata and annotations added post-variant calling.
 
-    
 \begin{figure}[h]
     \centering
-   \includegraphics[width=0.99\textwidth]{./images/qv_pipeline_vcurrent.pdf}
-    \caption{Summary of the example application design DNA SNV INDEL v1 pipeline. \ac{qv}1 and \ac{qv}2 are shown as sequential and potentially piped protocol steps.}
-    \label{fig:pipeline_figure}
+   \includegraphics[width=0.99\textwidth]{./images/qv_pipeline_with_file_vcurrent.pdf}
+    \caption{Summary of the example application design DNA SNV INDEL v1 pipeline. \ac{qv}1 and \ac{qv}2 are shown as sequential and potentially piped protocol steps.
+    QV files used in a pipeline. The description file contains brief summary of how or why a step is used in the QV set (not mandatory). The variables file contains the necessary values of a QV setting (mandatory). These variables are loaded by the analysis pipeline. This illustration highlights a single stage in the QV1 set (i.e. step 10 in our example WGS analysis pipeline where the GATK VQSR method is applied). The full pipeline illustrated in the top panel simplifies this process under the QV1 icon.
+    }
+    \label{fig:qv_pipeline_with_file_vcurrent}
 \end{figure}
 
 \begin{figure}[h]
@@ -117,9 +132,6 @@ shows the structural framework of a variant's features that may trigger specific
 \caption{This illustration shows the structural framework of an annotated variant in relation to the features used for qualification. For every individual variant, a number features are capable of triggering \ac{qv} protocols. The diagram highlights a select group of these features, showcasing both pre-existing metadata established before data generation and annotations applied after variant calling.}
 \label{fig:qv_structure_vcurrent}
 \end{figure}
-
-
-
 
 \section{Background}
 \subsection{The problem and proposed solution}
@@ -163,8 +175,6 @@ We therefore define and exemplify several common sets of \ac{qv}s, illustrating 
     \item We highlight that \ac{qv}s are integral throughout the analysis pipeline, not merely as an end-stage addition but as essential components distributed across the process.
 \end{enumerate}
 
-
-
 \section{Advanced applications and case studies}
 In-depth look at specific scenarios where \ac{qv}s have been crucial, such as in \ac{gwas} and clinical genetics. Examples of successful application of \ac{qv}s in large-scale studies and rare disease research.
 
@@ -190,7 +200,9 @@ Several \ac{qv} protocols can be piped together to create increasingly filtered 
 We propose an example focusing on a SNV/INDEL pipeline using two \ac{qv} sets named 
 \colorbox{colorSUNSET2!60}{\texttt{QV SNV INDEL v1}} and
 \colorbox{colorSUNSET2!60}{\texttt{QV SNV INDEL v2}}.
-The \ac{qv} sets would be described in an analysis pipeline as follows:
+The \ac{qv} sets are illustrated in 
+\textbf{box \ref{box:pipe}}
+and would be described in an analysis pipeline as follows:
 
 %\begin{quotation}
 ``A cohort of patient WGS data was analysed to identify genetic determinants for the clinical diagnosis of phenotype X. 
@@ -217,7 +229,8 @@ This pipeline is concerned with WGS germline short variant discovery (SNVs + Ind
     boxrule=1pt,  % Width of the border
     arc=1mm,  % Radius of the corner rounding
     outer arc=1mm,
-    title=\textbf{Example diagrammatic representation}
+%    title=\textbf{Example diagrammatic representation}
+   title=\textbf{\refstepcounter{myboxcounter}\label{box:pipe}Box \themyboxcounter: Example diagrammatic representation}
 ]
 
 \dirtree{%
@@ -238,22 +251,29 @@ Result 1 = Cohort-level association signal (e.g. variant P-value). \\
 Result 2 = Single variant for single patient.
 \end{tcolorbox}
 
-
-
-\section{Methodological innovations and framework}
-Introduction of new statistical methods and frameworks needed for the effective use of \ac{qv}s. Detailed protocol descriptions and variable examples.
-
-\subsection{Qualifying variant protocol}
-
-We use two levels to handle \ac{qv} protocols. 
-
+\section{Methodological framework}
+We introduce 
+a simple framework for the effective use of \ac{qv} protocols.
+We use three steps to fulfil the needs of a pipeline as illustrated in 
+\textbf{figure 
+\ref{fig:qv_pipeline_with_file_vcurrent}}:
 \begin{enumerate}
-\item \textbf{Description}: The description of each step as part of an overall \ac{qv} set. An example is shown in\textbf{section \ref{sec:protocol_description_example}}.\\
-\item \textbf{Variables} The variables responsible which are sourced as part of a pipeline. An example is shown in\textbf{section \ref{sec:protocol_variables_example}}.
+\item \textbf{Variables}: The variables responsible which are sourced as part of a pipeline, as shown in \textbf{example box \ref{box:qv_description_example}}.
+\item \textbf{Description}: The description of each step as part of an overall \ac{qv} set, as shown in \textbf{example box \ref{box:qv_description_example}}.
+\item \textbf{Source code}: The variables file can be sourced in pipeline code, as shown in \textbf{example box \ref{box:qv_bash_code_example}}.
 \end{enumerate}
 
+%\subsection{Example QV variables }\label{sec:protocol_variables_example}
 
-\subsection{Qualifying variant protocol description example}\label{sec:protocol_description_example}
+We select the step \textbf{[QC]} \colorbox{kispiblue!30}{\texttt{vqsr}} from the example \ac{qv} set
+\colorbox{colorSUNSET2!60}{\texttt{QV SNV INDEL v1}}
+to illustrate the variables sourced during the pipeline.
+The following code snippet shows the from variables sourced during VQSR. 
+%Table \ref{tab:variables_example} shows the details about the sourced variables used during VQSR.
+
+%Make a yed map to show the pipeline again, this time adding the explicit example of the VQSR variable settings from the variables.sh file.
+%This show graphic summary icon for other \ac{qv} steps throughout the pipeline.
+%Compare it to figure 1 where the summary of the pipeline simply illustrate \ac{qv} v1 as a single step but in this figure we see that it is actually spread throughout the pipeline by necessity. 
 
 Individual steps in \ac{qv} criteria can have multiple types. 
 For organisation in our protocols we suggest simple labels such as ``QC'' and ``filter''. 
@@ -261,72 +281,121 @@ For organisation in our protocols we suggest simple labels such as ``QC'' and ``
 (2) multiple steps with annotation labels such as QC flags which do not remove variants but allow for downstream dissensions which which depend on multiple \ac{qv} criteria. 
 Thus, in a QC protocol a single step might run and filter all variants from criteria (1 ``filter'') and another filtering step might depend on several combined criteria (2 ``QC'') which were added upstream.
 
+\begin{tcolorbox}[
+    breakable,  % Allows the box to split over pages
+    colback=white!0,  % No background color (fully transparent)
+    colframe=black,  % Black border color
+    boxrule=1pt,  % Width of the border
+    arc=1mm,  % Radius of the corner rounding
+    outer arc=1mm,
+%    title=\textbf{1. Example QV variables - extract from QV1 variables file}
+     title=\textbf{\refstepcounter{myboxcounter}\label{box:qv_variables_example}Box \themyboxcounter: Example QV variables - extract from QV1 variables file}
+]
+
+\begin{verbatim}
+# VQSR SNP Mode Variables
+vqsr_snp_hapmap_known="false"
+vqsr_snp_hapmap_training="true"
+vqsr_snp_hapmap_truth="true"
+vqsr_snp_hapmap_prior="15.0"
+
+vqsr_snp_omni_known="false"
+vqsr_snp_omni_training="true"
+vqsr_snp_omni_truth="false"
+vqsr_snp_omni_prior="12.0"
+
+vqsr_snp_1000g_known="false"
+vqsr_snp_1000g_training="true"
+vqsr_snp_1000g_truth="false"
+vqsr_snp_1000g_prior="10.0"
+
+vqsr_snp_annotations="QD,MQ,MQRankSum,ReadPosRankSum,FS,SOR"
+vqsr_snp_truth_sensitivity="99.7"
+
+\end{verbatim}
+\end{tcolorbox}
+
+%\begin{tcolorbox}[
+%    breakable,  % Allows the box to split over pages
+%    colback=white!0,  % No background color (fully transparent)
+%    colframe=black,  % Black border color
+%    boxrule=1pt,  % Width of the border
+%    arc=1mm,  % Radius of the corner rounding
+%    outer arc=1mm,
+%    title=\textbf{Example QV description}
+%]
+%
+%\begin{enumerate}
+%    \item \textbf{[QC]} \colorbox{kispiblue!30}{\texttt{fastp}} The tool fastp is used for QC. FASTQ that fail are investigated or removed. See \href{fastp.html}{fastp} for more.
+%    \item \textbf{[QC]} \colorbox{kispiblue!30}{\texttt{collectwgsmetrics}} BAMs that fail are investigated or removed. See \href{metrics_CollectWgsMetrics.html}{metrics\_CollectWgsMetrics} for more.
+%    \item \textbf{[QC]} \colorbox{kispiblue!30}{\texttt{rmdup\_merge}} is used to mark optical duplicates. See \href{design\_doc/gatk\_duplicates.html}{GATK Duplicates} for more.
+%
+%    \item \textbf{[QC]} \colorbox{kispiblue!30}{\texttt{haplotype\_caller}} used \texttt{-ERC GVCF} mode. This does not remove variants but condenses non-variant blocks, in contrast to  \texttt{BP\_RESOLUTION}, \texttt{GVCF} mode.
+%    
+%    \item \textbf{[QC]} \colorbox{kispiblue!30}{\texttt{qc\_summary\_stats}} is used to log QC. This implements \texttt{bcftools stats} and subsequently the bcftools \texttt{plot-vcfstats} using \texttt{python -m venv envQCplot} with matplotlib. Subjects fail are investigated or removed. See \texttt{metrics\_bcftoolsstats} documentation for more.
+%    
+%    \item \textbf{[QC]} \colorbox{kispiblue!30}{\texttt{vqsr}} employs Variant Quality Score Recalibration (VQSR) using GATK. Includes the use of key metrics such as Quality by Depth (QD), Mapping Quality (MQ), and Read Position Rank Sum Test (ReadPosRankSum) to filter variants.
+
+%    \item \textbf{[QC]} see \colorbox{kispiblue!30}{\texttt{qc\_summary\_stats}} for plink logs. If any value fails to meet the threshold, it is either removed or investigated.
+%    
+%    \item \textbf{[QC]} \textbf{Optional} CollectVariantCallingMetrics. An example is shown in our documents on ``How to filter variants with VQSR'' and   ``CollectVariantCallingMetrics-Picard''.
+%    
+%    \item \textbf{[QC]} \textbf{Optional} Other Picard metrics which are not in used by default. See ``Picard metric definitions'' for more.
+%    
+%      \item \textbf{[QC]} \colorbox{kispiblue!30}{\texttt{genotype\_refinement}}  Includes: (1) \texttt{CalculateGenotypePosteriors}: Refines genotype probabilities using family data and/or population allele frequencies, primarily from gnomAD, to improve initial likelihoods from variant callers. (2) \texttt{VariantFiltration}: Applies filters on genotype quality scores (e.g. \texttt{GQ < 20}) to flag lower confidence genotypes.
+%      
+%    \item \textbf{[QC]} The same stats as \colorbox{kispiblue!30}{\texttt{qc\_summary\_stats}} for plink logs are run in step \colorbox{kispiblue!30}{\texttt{genotype\_refinement}}.
+%    
+%   \item \textbf{[Filter]} \colorbox{kispiblue!30}{\texttt{pre\_annotation\_processing}}. Ffiltering variants using \texttt{bcftools filter} and GATK \texttt{SelectVariants}.  (1)\texttt{ QUAL$\ge$ 30}: high confidence score in the variant call. (2) \texttt{INFO/DP$\ge$20}: total depth of quality base calls, supporting the variant's presence. (3) \texttt{FORMAT/DP$\ge$10}: minimum depth per sample reads per genotype. (4) \texttt{FORMAT/GQ$\ge$20}: genotype quality for each sample. (5) GATK \texttt{SelectVariants} is applied with \texttt{--exclude-filtered}, \texttt{ --exclude-non-variants}, and \texttt{--remove-unused-alternates}.
+%    
+%\item \textbf{[QC]} \colorbox{kispiblue!30}{\texttt{pre\_annotation\_processing}} also incorporates \texttt{vt decompose} which splits multiallelic variants into separate observations and \texttt{vt normalization}  which adjusts variant representations to conform to a consensus format, as described in Tan et. al (2015).
+%
+%\item \textbf{[Filter]} \textbf{[QC]} \colorbox{kispiblue!30}{\texttt{pre\_annotation\_MAF}}  a filter with \texttt{vcftools --max-maf} using the source variable (e.g.\texttt{MAF\_value="0.4"})  for reducing the data size by removing common variants. 
+%\end{enumerate}
+%\end{tcolorbox}
+
+
+\begin{tcolorbox}[
+    breakable,  % Allows the box to split over pages
+    colback=white!0,  % No background color (fully transparent)
+    colframe=black,  % Black border color
+    boxrule=1pt,  % Width of the border
+    arc=1mm,  % Radius of the corner rounding
+    outer arc=1mm,
+%    title=\textbf{2. }
+         title=\textbf{\refstepcounter{myboxcounter}\label{box:qv_description_example}Box \themyboxcounter: Example QV description file (highlighting VQSR steps)}
+]
+
 \begin{enumerate}
-    \item \textbf{[QC]} \colorbox{kispiblue!30}{\texttt{01\_fastp}} The tool fastp is used for QC. FASTQ that fail are investigated or removed. See \href{fastp.html}{fastp} for more.
-    \item \textbf{[QC]} \colorbox{kispiblue!30}{\texttt{03b\_collectwgsmetrics}} BAMs that fail are investigated or removed. See \href{metrics_CollectWgsMetrics.html}{metrics\_CollectWgsMetrics} for more.
-    \item \textbf{[QC]} \colorbox{kispiblue!30}{\texttt{05\_rmdup\_merge}} is used to mark optical duplicates. See \href{design\_doc/gatk\_duplicates.html}{GATK Duplicates} for more.
-    \item \textbf{[QC]} \colorbox{kispiblue!30}{\texttt{07\_haplotype\_caller}} used \texttt{-ERC GVCF} mode. This does not remove variants but unlike \texttt{BP\_RESOLUTION}, \texttt{GVCF} mode condenses non-variant blocks which could be misunderstood later as missing if not recognised by the user, for example in a genotype matrix which has been merged with other cohorts.  See our VCF and gVCF documentation for more.
-    \item \textbf{[QC]} \colorbox{kispiblue!30}{\texttt{07c\_qc\_summary\_stats}} is used to log QC. This implements \texttt{bcftools stats} and subsequently the bcftools \texttt{plot-vcfstats} using \texttt{python -m venv envQCplot} with matplotlib. Subjects fail are investigated or removed. See \texttt{metrics\_bcftoolsstats} documentation for more.
-    
-    \item \textbf{[QC]} \colorbox{kispiblue!30}{\texttt{10\_vqsr}} employs Variant Quality Score Recalibration (VQSR) using GATK. The method includes the use of key metrics such as Quality by Depth (QD), Mapping Quality (MQ), and Read Position Rank Sum Test (ReadPosRankSum) to filter variants. Resources like HapMap and Omni SNP chip array data train the recalibration model, which assigns a VQSLOD score to each variant indicating the likelihood of its authenticity. This step refines variant filtering to enhance accuracy in genomic research.
-
-    \item \textbf{[QC]} see \colorbox{kispiblue!30}{\texttt{10b\_qc\_summary\_stats}} for plink logs. If any value fails to meet the threshold, it is either removed or investigated.
-    
-    \item \textbf{[QC]} \textbf{Optional} CollectVariantCallingMetrics. An example is shown in our documents on ``How to filter variants with VQSR'' and   ``CollectVariantCallingMetrics-Picard''.
-    
-    \item \textbf{[QC]} \textbf{Optional} Other Picard metrics which are not in used by default. See ``Picard metric definitions'' for more.
-    
-      \item \textbf{[QC]} \colorbox{kispiblue!30}{\texttt{11\_genotype\_refinement}} This step uses the Genotype Refinement workflow to enhance the precision of genotype calls. The process includes: (1) \texttt{CalculateGenotypePosteriors}: Refines genotype probabilities using family data and/or population allele frequencies, primarily from gnomAD, to improve initial likelihoods from variant callers. This method is particularly effective in trio studies, reducing false positives and enhancing genotype accuracy. (2) \texttt{VariantFiltration}: Applies filters on genotype quality scores (e.g. \texttt{GQ < 20}) to flag lower confidence genotypes. It refines the quality of variant calls by annotating individual genotypes based on specified criteria, thus isolating high-confidence calls.
-      
-    \item \textbf{[QC]} The same stats as \colorbox{kispiblue!30}{\texttt{10b\_qc\_summary\_stats}} for plink logs are run in step \colorbox{kispiblue!30}{\texttt{11\_genotype\_refinement}}.
-    
-   \item \textbf{[Filter]} \colorbox{kispiblue!30}{\texttt{12\_pre\_annotation\_processing}}. This step involves filtering variants using \texttt{bcftools filter} and further processing with GATK \texttt{SelectVariants}.  (1)\texttt{ QUAL$\ge$ 30}: Ensures high confidence score in the variant call. (2) \texttt{INFO/DP$\ge$20}: Required total depth of quality base calls, supporting the variant's presence. (3) \texttt{FORMAT/DP$\ge$10}: Ensures a minimum depth per sample reads per genotype, confirming sufficient data support. (4) \texttt{FORMAT/GQ$\ge$20}: Ensures the genotype quality for each sample, reflecting confidence in genotype assignment. (5) Then GATK \texttt{SelectVariants} is subsequently applied with \texttt{--exclude-filtered}, \texttt{ --exclude-non-variants}, and \texttt{--remove-unused-alternates}.
-    
-\item \textbf{[QC]} \colorbox{kispiblue!30}{\texttt{12\_pre\_annotation\_processing}} also incorporates a second independent variant processing technique using the vt tool to enhance data quality for downstream analysis. This includes \texttt{vt decompose} which splits multiallelic variants into separate observations, simplifying complexity and reducing potential errors in subsequent analyses, and \texttt{vt normalization}  which adjusts variant representations to conform to a consensus format, ensuring that each variant is represented parsimoniously as described in Tan et. al (2015). This process makes the representation of variants as concise as possible without reducing any alleles to length zero.
-
-\item \textbf{[Filter]} \textbf{[QC]} \colorbox{kispiblue!30}{\texttt{13\_pre\_annotation\_MAF}} runs data preparation steps including a filter with \texttt{vcftools --max-maf} using the source variable (e.g.\texttt{MAF\_value="0.4"}). This step is simply for reducing the data size to remove highly common variants. We do not expect more than 40\% of the cohort to share a relevant variant.
+    \item \textbf{[QC]} \colorbox{kispiblue!30}{\texttt{fastp}} The tool fastp is used for ...
+    \item \textbf{[QC]} \colorbox{kispiblue!30}{\texttt{collectwgsmetrics}} BAMs that fail are ...
+    \item \textbf{[QC]} \colorbox{kispiblue!30}{\texttt{rmdup\_merge}} is used to mark ...
+    \item \textbf{[QC]} \colorbox{kispiblue!30}{\texttt{haplotype\_caller}} used \texttt{-ERC GVCF} mode for ...
+    \item \textbf{[QC]} \colorbox{kispiblue!30}{\texttt{qc\_summary\_stats}} is used to log QC ...
+    \item \textbf{[QC]} \colorbox{kispiblue!30}{\texttt{vqsr}} employs Variant Quality Score Recalibration (VQSR) using GATK. Includes the use of key metrics such as Quality by Depth (QD), Mapping Quality (MQ), and Read Position Rank Sum Test (ReadPosRankSum) to filter variants. The setting for SNPs are:
+\begin{itemize}
+    \item \textbf{VQSR SNP Mode - HapMap:} known=false, training=true, truth=true, prior=15.0. Used as a high-confidence reference set for training the recalibration model.
+    \item \textbf{VQSR SNP Mode - Omni:} known=false, training=true, truth=false, prior=12.0. Provides additional training data derived from Omni genotyping arrays.
+    \item \textbf{VQSR SNP Mode - 1000G:} known=false, training=true, truth=false, prior=10.0. Utilizes data from the 1000 Genomes Project to inform the model on common SNP variations.
+    \item \textbf{VQSR Annotations - QD, MQ, MQRankSum, ReadPosRankSum, FS, SOR:} Annotations are metrics used to predict the likelihood of a variant being a true genetic variation versus a sequencing artifact. They include quality by depth, mapping quality, mapping quality rank sum test, read position rank sum test, Fisher's exact test for strand bias, and symmetric odds ratio of strand bias.
+    \item \textbf{VQSR Truth Sensitivity Filter Level:} 99.7. Specifies the percentage of true variants to retain at a given VQSLOD score threshold, set here to capture 99.7\% of true variants.
+    \end{itemize}    
 \end{enumerate}
+\end{tcolorbox}
 
-\subsection{Qualifying variant protocol variables example}\label{sec:protocol_variables_example}
+\begin{tcolorbox}[
+    breakable,  % Allows the box to split over pages
+    colback=white!0,  % No background color (fully transparent)
+    colframe=black,  % Black border color
+    boxrule=1pt,  % Width of the border
+    arc=1mm,  % Radius of the corner rounding
+    outer arc=1mm,
+%    title=\textbf{3. Example code sourcing the variables file}
+    title=\textbf{\refstepcounter{myboxcounter}\label{box:qv_bash_code_example}Box \themyboxcounter: Example code sourcing the variables file}
+]
 
-We select the step \textbf{[QC]} \colorbox{kispiblue!30}{\texttt{10\_vqsr}} from the example \ac{qv} set
-\colorbox{colorSUNSET2!60}{\texttt{QV SNV INDEL v1}}
-to illustrate the variables sourced during the pipeline.
-The following code snippet shows the from variables sourced during VQSR. 
-Table \ref{tab:variables_example} shows the details about the sourced variables used during VQSR.
-
-\textbf{!Show the variable.sh snippet here.}
-
-\begin{table}[htbp]
-\caption{Description of the VQSR variable settings used as part of the step \textbf{[QC]} \colorbox{kispiblue!30}{\texttt{10\_vqsr}} in the example \ac{qv} set \colorbox{colorSUNSET2!60}{\texttt{QV SNV INDEL v1}}.}
-	\label{tab:variables_example}
-\begin{tabular}{|p{5cm}|p{10cm}|}
-    \hline
-    \textbf{VQSR Settings} & \textbf{Explanation} \\
-    \hline
-    \textbf{SNP Mode} & \\
-    - \textbf{HapMap:} known=false, training=true, truth=true, prior=15.0 & Used as a high-confidence reference set for training the recalibration model. \\
-    \textbf{Omni:} known=false, training=true, truth=false, prior=12.0 & Provides additional training data derived from Omni genotyping arrays. \\
-    \textbf{1000G:} known=false, training=true, truth=false, prior=10.0 & Utilizes data from the 1000 Genomes Project to inform the model on common SNP variations. \\
-    \textbf{Annotations:} QD, MQ, MQRankSum, ReadPosRankSum, FS, SOR & Annotations are metrics used to predict the likelihood of a variant being a true genetic variation versus a sequencing artifact. They include quality by depth, mapping quality, mapping quality rank sum test, read position rank sum test, Fisher's exact test for strand bias, and symmetric odds ratio of strand bias. \\
-    \textbf{Truth Sensitivity Filter Level:} 99.7 & Specifies the percentage of true variants to retain at a given VQSLOD score threshold, set here to capture 99.7\% of true variants. \\
-    \hline
-    \textbf{INDEL Mode} & \\
-    \textbf{Mills:} known=false, training=true, truth=true, prior=12.0 & Utilizes the Mills and 1000G gold standard indel dataset for high-accuracy recalibration of indels. \\
-    \textbf{dbSNP:} known=true, training=false, truth=false, prior=2.0 & Includes known indel sites from the dbSNP database to enhance the detection and filtering process. \\
-    \textbf{Annotations:} QD, MQRankSum, ReadPosRankSum, FS, SOR & Same as for SNPs, these annotations are critical for assessing the likelihood of indels being true genetic variations rather than errors. \\
-    \textbf{Truth Sensitivity Filter Level:} 95 & This setting defines the percentage of true indels to retain, aiming to capture 95\% of true indels at the specified VQSLOD threshold. \\
-    \hline
-\end{tabular}
-\end{table}
-
-Make a yed map to show the pipeline again, this time adding the explicit example of the VQSR variable settings from the variables.sh file.
-This show graphic summary icon for other \ac{qv} steps throughout the pipeline.
-Compare it to figure 1 where the summary of the pipeline simply illustrate \ac{qv} v1 as a single step but in this figure we see that it is actually spread throughout the pipeline by necessity. 
-
-
-
-
+\lstinputlisting{example_qv_code.sh}
+\end{tcolorbox}
 
 
 \section{Standardisation of \ac{qv} advances theoretical domains}
@@ -385,15 +454,7 @@ and Pearl (2016) (Pearl, J., Glymour, M.,  Jewell, N. P. (2016). Causal inferenc
 
 Address how deep phenotyping and precision medicine with omic data are reshaping data integration strategies - standardised database formats are critical for genomics and \ac{qv} should not be an afterthought \cite{bycroft2018uk, all2024genomic, ogishima2021dbtmm}.
 
-
-
-
-
-
-
-
-
-\subsection{Future Directions and Implications} 
+\subsection{Future directions and implications} 
 
 Discussion on the necessity of sophisticated data integration strategies. Predictions for the future of omics research with the standardized use of refined \ac{qv}s.
 
@@ -411,7 +472,5 @@ Summary of the main findings and the importance of \ac{qv} standardisation. Call
 
 \bibliographystyle{unsrtnat}
 \bibliography{references}  %%% Uncomment this line and comment out the ``thebibliography'' section below to use the external .bib file (using bibtex) .
-
-
 
 \end{document}
