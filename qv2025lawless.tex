@@ -86,6 +86,7 @@ variant set association test (VSAT) might prioritise rare variant collapse,
 and clinical genetic reports may focus on rare or novel variants. 
 Therefore, \ac{qv}s are categorised by the extent and nature of the filtering or quality control they undergo, tailored to the research or clinical requirements. 
 \citet{povysil2019rare} previously provided a tangible example of \ac{qv} for variant collapsing analyses for complex traits. 
+\citet{cirulli2015exome} reported one of the first variant collapse analysis and introduced the \ac{qv} concept.
 However, a standardised framework for presenting \ac{qv} themselves remains missing. 
 We detail three typical applications of \ac{qv} sets:
 
@@ -105,14 +106,21 @@ Rigorous \ac{qv} selection and categorisation in genetic research and diagnostic
 demonstrates a typical WGS and \ac{vsat} analysis pipeline, showing \ac{qv}s as sequential and potentially piped protocol steps.
 The common approach to representing \ac{qv} steps are illustrated in 
 \textbf{figure \ref{fig:qv_filter_pyramid_vcurrent}}.
-This style simplifies the variant filtering process where each layer may arise from different stages of a pipeline
+This style simplifies the variant filtering process where each layer may arise from different stages of a pipeline.
+The raw omic data can be processed into a multi-use analysis-ready format, as illusteated in 
+\textbf{figure 
+\ref{fig:candidate_variants_sequence_to_matrix}}.
+Initial \ac{qv} steps can include QC filtering. 
+After variant annotation, further \ac{qv} steps can be applied on this new information as shown in 
+\textbf{figure
+\ref{fig:candidate_variants_sequence_annotation}}.
  \textbf{Figure 
 \ref{fig:qv_structure_vcurrent}}
 shows the structural framework of a variant's features that may trigger specific \ac{qv} protocols, highlighting both pre-existing metadata and annotations added post-variant calling.
 
 \begin{figure}[h]
     \centering
-   \includegraphics[width=0.99\textwidth]{./images/qv_pipeline_with_file_vcurrent.pdf}
+   \includegraphics[width=0.75\textwidth]{./images/qv_pipeline_with_file_vcurrent.pdf}
     \caption{Summary of the example application design DNA SNV INDEL v1 pipeline. \ac{qv}1 and \ac{qv}2 are shown as sequential and potentially piped protocol steps.
     QV files used in a pipeline. The description file contains brief summary of how or why a step is used in the QV set (not mandatory). The variables file contains the necessary values of a QV setting (mandatory). These variables are loaded by the analysis pipeline. This illustration highlights a single stage in the QV1 set (i.e. step 10 in our example WGS analysis pipeline where the GATK VQSR method is applied). The full pipeline illustrated in the top panel simplifies this process under the QV1 icon.
     }
@@ -121,10 +129,27 @@ shows the structural framework of a variant's features that may trigger specific
 
 \begin{figure}[h]
 \centering
-     \includegraphics[width=0.5\textwidth]{./images/qv_filter_pyramid_vcurrent.pdf}
+     \includegraphics[width=0.4\textwidth]{./images/qv_filter_pyramid_vcurrent.pdf}
 \caption{Illustration of the qualifying variant workflow. This figure summarises the conceptualised variant filtering step. This style is relatively common. In reality, we observe that each layer of the filters comes from disparate stages of a pipeline.}
     \label{fig:qv_filter_pyramid_vcurrent}
 \end{figure}
+
+\begin{figure}[h]
+    \centering
+   \includegraphics[width=0.99\textwidth]{./images/candidate_variants_sequence_to_matrix.pdf}
+    \caption{From raw omics to data matrix.  We focus on DNA variants in \ac{qv} but the same concept applies to other datasets.}
+    \label{fig:candidate_variants_sequence_to_matrix}
+\end{figure}
+
+
+
+\begin{figure}[h]
+    \centering
+   \includegraphics[width=0.99\textwidth]{./images/candidate_variants_sequence_annotation.pdf}
+    \caption{The initial variant detection pipeline generlly requires QC and filtering rules that are the first \ac{qv} steps. Once complete, annotation of variants can follow. Further \ac{qv} steps can be run based on these new annotations.}
+    \label{fig:candidate_variants_sequence_annotation}
+\end{figure}
+
 
 \begin{figure}[h]
 \centering
@@ -139,7 +164,7 @@ shows the structural framework of a variant's features that may trigger specific
 %Historical context of \ac{qv}s and their evolution. Challenges faced in the qualification of variants and the necessity for standardisation.
 
 %To enhance the conceptualisation and application of \ac{qv} in genomic analyses, we explore \ac{qv} not merely as a filtering criterion but as a dynamic and multifaceted concept essential for various genomic analysis scenarios. 
-
+Version1:
 Study sizes are beginning to reach above 1,000,000 subjects
 \cite{lee2018gene, jansen2019genome}.
 The transitions to WGS instead of genotyping by default means that rare variants can now be used in \ac{gwas} and \ac{vsat}, allowing for deeper analysis of complex traits
@@ -150,6 +175,8 @@ In reality the steps of \ac{qv} can be separated across a pipeline and result fr
 In addition, complex analysis require multiple different streams of processing that converge into a joint analysis.
 This multifaceted concept of \ac{qv} naturally appears in these multicomponent analysis since two or more sets will be required.
 
+
+Version2: 
 As study sizes surpass the 1,000,000 subjects milestone \cite{lee2018gene, jansen2019genome}, the shift towards \ac{wgs} over genotyping has become standard. 
 This transition enables the inclusion of rare variants in \ac{gwas} and \ac{vsat}, allowing for more comprehensive analyses of complex traits \cite{manolio2009finding, young2019solving}. 
 \ac{qv} protocols are essential in data cleaning and preparation, serving as a critical step in ensuring the integrity of data analysis. 
@@ -468,6 +495,116 @@ Consider the impact of new publishing formats like Registered Reports on the fie
 Moreover, this approach is crucial as we develop increasingly sophisticated machine learning and artificial intelligence models capable of integrating vast multi-omic datasets. The potential for these models to unravel complex biological phenomena is immense, yet the challenge remains in assembling sufficient training data. Particularly in the realm of rare diseases, the raw data from human cases potentially do not meet the extensive needs of these advanced models. The embeddings or feature representations derived from raw data may be insufficient for training robust models; however, properly formatted and curated \ac{qv}s may enrich these representations, enhancing the potential for accurate model training. If so, the accurate and strategic application of \ac{qv}s becomes essential. By effectively identifying key data through refined \ac{qv} protocols, researchers can enhance the accuracy and efficacy of predictive models, opening up new avenues for significant biological discoveries.
 
 The need for advanced \ac{qv} protocols that can effectively manage such complexity is critical, particularly in the development of statistical methods designed to navigate the intricate relationships within and across diverse omic data blocks. A standardised and nuanced application of \ac{qv}s, detailed through explicit protocols and definitions, is fundamental for the evolution of new analytical frameworks. Therefore, we advocate for a more refined and comprehensive use of \ac{qv}s, advancing beyond traditional single-stage filters to meet the sophisticated demands of modern multi-omic research. 
+
+\subsection{Notation typical to GWAS, VSAT, and other statistical applications}
+
+The logistic regression model for estimating the probability of case status is given by:
+\[
+\text{logit}(p_i) = \log\left(\frac{p_i}{1 - p_i}\right) = \beta_0 + \sum_{k=1}^n \beta_k x_{ik} + \beta_{\text{geno}} G_i
+\]
+where:
+- \( p_i \) is the estimated probability that individual \( i \) is a case, based on their genotypic and covariate data,
+- \( \beta_0 \) is the intercept,
+- \( \beta_k \) are the coefficients for the covariates,
+- \( x_{ik} \) represents the covariate values for the \( i \)-th individual,
+- \( \beta_{\text{geno}} \) is the coefficient for the genetic effect,
+- \( G_i \) is the genotype of the \( i \)-th individual, coded as 0, 1, or 2.
+
+The following version shows the explicit GWAS model with QV notation:
+\[
+\text{logit}(p_i) = \log\left(\frac{p_i}{1 - p_i}\right) = \beta_0 + \beta_1 \text{sex}_i + \beta_2 \text{log10(age\_days)}_i + \sum_{j=1}^{10} \beta_{2+j} \text{PC}_j^{(i)} + \beta_{13} G_{\text{QV}_{i,v}}
+\]
+where:
+- \( \beta_0 \) is the intercept,
+- \( \beta_1 \) adjusts for sex (1 if male, 0 if female),
+- \( \beta_2 \) adjusts for the log-transformed age in days,
+- \( \beta_3 \) to \( \beta_{12} \) correspond to the first ten principal components, adjusting for population stratification,
+- \( \beta_{13} \) is the effect of the genotype on the phenotype, with \( G_{\text{QV}_{i,v}} \) denoting the genotype of the \( i \)-th individual for the \( v \)-th variant in the QV set, coded as 0, 1, or 2 (representing the number of minor alleles).
+
+
+SKAT and its optimal unified version, SKAT-O, are now popular methods for gene-based association tests that accommodate multiple variants within a gene or variant set while accounting for their potentially differing directions and magnitudes of effects. The logistic regression model for SKAT, taking into account the specific variants from the QV set, can be described as follows:
+
+\[
+\log \left( \frac{P}{1-P} \right) = X_i \gamma + G_{\text{QV}_{i,v}} \beta
+\]
+
+where:
+- \( P \) is the disease probability,
+- \( \gamma \) is an \( s \times 1 \) vector of regression coefficients of covariates,
+- \( \beta \) is an \( m \times 1 \) vector of regression coefficients for genetic variants,
+- \( G_{\text{QV}_{i,v}} \) denotes the genotype values for all variants \( v \) in the QV set for individual \( i \).
+
+The SKAT statistic is then:
+\[
+Q_S = (y - \hat{\pi})^\top K (y - \hat{\pi})
+\]
+where \( \hat{\pi} \) is the vector of the estimated probability of \( y \) under the null model, and \( K \) is the kernel matrix defined as \( G_{\text{QV}} W G_{\text{QV}}^\top \), with \( W \) being the diagonal weight matrix for the variants.
+
+
+% \subsection*{Conceptual Framework and Statistical Representation}
+
+%In statistical genomics studies, for example in genome-wide association studies (GWAS), the transition from theoretical axiomatic variants (QV\_ax) to empirically testable variants (QV1) is a critical step. QV\_ax represents an idealized set of genetic variants that perfectly align with fundamental genetic principles, considered correct by genetic doctrine. We discuss this in detail elsewhere (cite Bayesian framwork paper). Due to current technological limitations and incomplete genetic knowledge, this set is often beyond empirical verification. Conversely, QV1 comprises variants subjected to standard GWAS pre-processing filters such as --geno, --maf, --hwe, and --mind, which select variants based on criteria like missing genotype data, minor allele frequency, Hardy-Weinberg equilibrium, and individual missing data.
+
+% The assessment of variants from QV\_ax to QV1 involves stringent criteria to ensure the data's reliability and scientific validity. This process, however, might lead to the exclusion of potentially informative variants, classified as false negatives (FN). It also defines the true positives (TP) as those variants present in both QV\_ax and QV1. The dynamics of this filtration process and its implications can be mathematically represented as follows:
+
+%\begin{align*}
+%\text{TP} &= QV\_ax \cap QV1, \\
+%\text{FN} &= QV\_ax \setminus QV1, \\
+%\text{Unknowns} &= |QV\_ax| - |\text{TP}|.
+%\end{align*}
+
+% These equations elucidate the relationship between axiomatic and filtered variants, quantifying the true positives and identifying the axiomatic variants erroneously excluded by the empirical filters. This analytical framework aids in understanding the trade-offs involved in GWAS pre-processing—balancing data quality against the risk of overlooking key genetic contributors to phenotypes under study.
+
+
+
+
+
+
+\subsection*{Conceptual Framework and Statistical Representation}
+
+In genome-wide association studies (GWAS), the transition from theoretical axiomatic variants (QV\_ax) to empirically testable variants (QV1) marks a pivotal stage in genetic research. QV\_ax comprises genetic variants that ideally conform to fundamental genetic principles and are thus considered correct by genetic doctrine. However, due to technological constraints and gaps in genetic understanding, QV\_ax remains largely theoretical and unverifiable empirically. In contrast, QV1 includes those variants from QV\_ax that survive rigorous empirical filtering, applying standard GWAS pre-processing criteria such as --geno, --maf, --hwe, and --mind, aimed at ensuring the quality and relevance of data by removing variants based on missing genotype data, minor allele frequency, Hardy-Weinberg equilibrium deviations, and individual missing data thresholds.
+
+The mathematical representation of the relationship between QV\_ax and QV1 is crucial for understanding the impact of this transition. Firstly, the intersection operation:
+\[
+\text{TP} = QV\_ax \cap QV1,
+\]
+identifies true positive variants, which are both theoretically ideal and empirically robust, thus successfully passing the GWAS filtering criteria. Secondly, the set difference operation:
+\[
+\text{FN} = QV\_ax \setminus QV1,
+\]
+calculates false negatives, representing the axiomatic variants that were erroneously excluded by the empirical filters, potentially omitting key genetic signals. Lastly, the quantification of unknowns:
+\[
+\text{Unknowns} = |QV\_ax| - |\text{TP}|,
+\]
+provides a measure of the magnitude of theoretical variants that remain untested or unconfirmed after processing, emphasizing the potential loss of valuable genetic information.
+
+This structured approach not only clarifies the dynamics between the axiomatic and filtered variants but also underscores the trade-offs involved in GWAS pre-processing. By balancing data quality against the risk of overlooking significant genetic contributors, this analytical framework aids researchers in navigating the complexities of genetic data preparation and evaluation.
+
+
+
+ We discuss this in detail elsewhere (cite Bayesian framwork paper). 
+ The ideas are briefly summarised:
+% \subsection*{Estimating Unknowns with Bayesian Statistics}
+In the context of genome-wide association studies (GWAS), Bayesian statistics offers a potent framework for integrating theoretical and empirical knowledge. This approach leverages prior biochemical and genetic data to refine our understanding of the landscape of genetic variants, particularly those beyond current empirical capabilities.
+
+% \subsubsection*{Bayesian Framework}
+We start by defining a \textbf{prior distribution} \( P(\theta) \) based on established knowledge about DNA mutation rates and variant frequencies, reflecting our initial beliefs about the genetic variant distribution. Given a dataset \( D \) from GWAS pre-processing (QV1), the \textbf{likelihood function} \( P(D|\theta) \) assesses the probability of observing the data under various genetic configurations dictated by \( \theta \).
+
+The \textbf{posterior distribution} \( P(\theta|D) \), derived from Bayes' Theorem,
+\[
+P(\theta|D) = \frac{P(D|\theta) \times P(\theta)}{P(D)},
+\]
+where \( P(D) \) serves as a normalizing constant, updates our beliefs in light of new data. This posterior distribution integrates both the prior information and the empirical data from GWAS, providing a nuanced estimate of the distribution of genetic variants.
+%\subsubsection*{Quantification of Unknowns}
+The ``Unknowns'' in our study, representing genetic variants not observed but theoretically possible within QV\_ax, are quantified as follows:
+\[
+\text{Unknowns} = \int_{\theta \in \Theta_{\text{unobserved}}} P(\theta|D) \, d\theta,
+\]
+where \( \Theta_{\text{unobserved}} \) encompasses all parameter values corresponding to unobserved variants. This integral effectively measures the total probability of variants that are conceivable but not detected in the empirical dataset QV1.
+
+%\subsubsection*{Conclusion}
+%This Bayesian method allows us to statistically infer properties of genetic variants that have not been directly observed, enhancing our predictive capabilities regarding the genetic architecture of complex traits and diseases. By adopting this approach, researchers can address the inherent limitations of empirical methods and achieve a deeper understanding of genetic variability.
+
 
 \section{Conclusions}
 Summary of the main findings and the importance of \ac{qv} standardisation. Call to action for the adoption of new methodologies and the continued evolution of \ac{qv} standards.
