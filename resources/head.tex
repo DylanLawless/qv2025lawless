@@ -3,6 +3,7 @@
  \usepackage{ragged2e}
 \usepackage{authblk}  % Package for author affiliations
 % \usepackage{nopageno} % no page numbers
+\usepackage[rightcaption]{sidecap}
 
 \usepackage[most]{tcolorbox}
 \newtcolorbox[auto counter,number within=chapter]{definition}[1][]{
@@ -36,7 +37,7 @@
 
 \usepackage{lineno} % used along with \linenumbers after begin document. 
 \usepackage{setspace} 
-% \setstretch{1.4}
+\setstretch{1.2}
 \makeatletter % The following lines get rid of footer stating pre-preint to elsevier.
 \def\ps@pprintTitle{%
 \let\@oddhead\@empty
@@ -63,7 +64,7 @@
 \usepackage{nameref}% this allows a reference be named, to print unnumbered references by their section name (used here for linking to Supplemental text in this case).
 
 %%%% Paragraph Formatting %%%
-\setlength{\parindent}{0pt}
+\setlength{\parindent}{2em}
 \setlength{\parskip}{6pt plus 2pt minus 1pt}
 
 %%%% Supplemental labels%%%%
@@ -170,3 +171,10 @@
 
 
 % {{\ttfamily \hyphenchar\the\font=`\-} % set hyphenation for texttt blocks
+
+\usepackage{xpatch}
+\xpatchcmd{\AC@deflist}
+  {\addtolength{\leftmargin}{\labelsep}}
+  {\addtolength{\leftmargin}{\labelsep}\setlength{\itemsep}{0pt}}
+  {}{}
+\makeatother
