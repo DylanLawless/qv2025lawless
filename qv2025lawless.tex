@@ -618,17 +618,15 @@ Standardised database formats are thus critical for genomics and \ac{qv} should 
 An example of a multi-part analysis with sets \ac{qv} sets 1, 2, and 3, 
 is illustrated in 
 \textbf{Figure \ref{fig:qv_matrix}}.
-For simplicity, we can assume that each set represents one \ac{qwas}.
+For simplicity, we can assume that each set represents one \ac{gwas}.
 The outcomes of each test can subsequently be combined with statistical methods such as the \ac{acat} \cite{liu2019acat, li2020dynamic}.
 It becomes possible to aggregate and compare these results from separate tests. 
 This process combines p-values across different analyses or variant sets, accounting for the directions and magnitudes of the effects. 
 It not only enhances the power to detect significant associations, especially when variants have heterogeneous effects but also simplifies the interpretation of aggregated genomic data. 
-By employing \ac{acat}, we can synthesize findings from multiple QV filters applied to the same genomic dataset, leading to a more comprehensive understanding of the genetic architecture of traits under study. 
-This method is particularly useful in scenarios where variants across different QV sets may contribute in varying degrees to the phenotype, allowing for a nuanced analysis that respects the complexity of genomic data.
+By employing \ac{acat}, we can synthesize findings from multiple \ac{qv} filters applied to the same genomic dataset, leading to a more comprehensive understanding of the genetic architecture of traits under study. 
+This method is useful in scenarios where variants across different \ac{qv} sets may contribute in varying degrees to the phenotype, allowing for a nuanced analysis that respects the complexity of genomic data.
 The combination method must be adapted in scenarios where variants (or collapsed variant sets) do not overlap. 
 We have previously provided methods to plot the results of such analysis with \href{https://github.com/DylanLawless/archipelago}{archipelago}  (cite pre-print instead of package).
-
-
 
 \subsection{Applications in complex data and multiblock fusion} 
 
@@ -645,7 +643,6 @@ how complex signals can exist within single datasets.
 % \cite{kong2018nature} % This paper shows for the first time that part of the signal in the \ac{gwas} for some traits is from ‘indirect genetic effects’ that act through parents rather than directly on the index individual, and shows how these can be disentangled with family data.
 % \cite{howe2021within} % This study is the largest within-sibship \ac{gwas} to date and illustrates the value of this method for disentangling direct genetic effects from indirect genetic effects and population structure.
 
-
 These methods allow for a detailed exploration of how different biological signals interact, offering a richer, more comprehensive view of the genomic landscape. 
 As these techniques evolve, they promise to break new ground in predictive modeling and theoretical biology, providing insights that are as profound as they are essential for precision medicine and personalised health interventions.
 
@@ -658,13 +655,11 @@ The resulting mixed-up mixed model requires new frameworks.
 By deploying a variety of \ac{qv} protocols simultaneously on a single dataset, we orchestrate a multi-dimensional analysis that spans the full spectrum of genomic inquiry. This integrated approach allows for the combination of various \ac{qv} protocols tailored to the specifics of the dataset, engaging different types of data analyses that can range from genetic variations to complex disease markers and beyond. 
 The integration of these diverse analytical layers facilitates a comprehensive examination of genetic factors on both individual and cohort levels, promoting understanding that could propel genetic insights. This complex interplay between multiple \ac{qv} sets catalyses the advancement of new theories in multi-omic research.
 
-
 \subsection{Protocol development and standardisation needs} 
 
 These complex approaches requires a clear protocol for merging data across different layers, ensuring that each contributes meaningfully to the unified model without conflating their distinct signals. 
 Therefore, a standardised definition and reporting style for \ac{qv} are crucial for the rapid development of new theories, especially in scenarios where data may not be publicly available, and codebases are complex. 
 The nuanced and widespread steps of \ac{qv} across lengthy pipelines will benefit from being reported explicitly as a protocol with a detailed list of definitions and variables, building on our demonstrated examples for one such set, \ac{qv}1.
-
 
 \section{Future directions and implications} 
 \subsection{Integration strategies}
