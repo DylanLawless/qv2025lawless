@@ -28,7 +28,6 @@
 \affil[1]{Department of Intensive Care and Neonatology and Children’s Research Centre, University Children's Hospital Zurich, University of Zurich, Zurich, Switzerland.}
 %\affil[2]{Global Health Institute, School of Life Sciences, École Polytechnique Fédérale de Lausanne, Switzerland.}
 
-%\begin{small}
 \maketitle
 \justify
 % \tableofcontents
@@ -41,6 +40,7 @@
     \parsep-1em\itemsep0pt\let\makelabel\descriptionlabel}}
                {\endlist}
 \begin{acronym} 
+ \acro{acat}[ACAT]{Aggregated Cauchy Association Test }
  \acro{acmg}[ACMG]{American College of Medical Genetics and Genomics}
  \acro{af}[AF]{Allele Frequency}
  \acro{gwas}[GWAS]{Genome Wide Association Test}
@@ -53,15 +53,12 @@
  \acro{vsat}[VSAT]{Variant Set Association Test}
  \acro{wgs}[WGS]{Whole Genome Sequencing}
 \end{acronym}
-
-% \end{small}
   
 \clearpage
 \begin{abstract}
-% \ac{qv}s  represent specific genomic alterations selected through defined criteria throughout processing pipelines, essential for downstream analyses in genetic research and clinical diagnostics.  Here we explore \ac{qv}s not just as simple filtering criteria but as a dynamic, multifaceted concept crucial across various genomic analysis scenarios.  We contend that the term ``\ac{qv}'' when standardised and optimised for advanced multi-stage use, rather than simplistic, single-stage filters, not only advances omics research but also opens up unexplored theoretical domains. Moreover, \ac{qv}s, typically seen as a set of filters and algorithms to exclude benign or unrelated variants, more often encompass complex steps distributed throughout the analysis pipeline. We redefine \ac{qv}s by illustrating several common sets and their roles within analysis pipelines, demonstrating their theoretical pipelining and standardisation for specific analytical scenarios.  By introducing a new vocabulary and a standard reference model, we aim to improve understanding and communication around \ac{qv}s, enhancing methodological discussions across disciplines.
 Qualifying variants (QV) are specific genomic alterations selected through defined criteria within processing pipelines, essential for downstream analyses in genetic research and clinical diagnostics. 
 This paper presents QV not merely as simple filtering criteria but as a dynamic and multifaceted concept critical for various genomic analysis scenarios. 
-We argue that standardising and optimising QVs for advanced multi-stage use, rather than limiting them to simplistic, single-stage filters, can significantly advance omics research and open up new theoretical domains. 
+We argue that standardising and optimising QVs for advanced multi-stage use, rather than limiting them to conceptually simplistic, single-stage filters, can significantly advance omics research and open up new theoretical domains. 
 Typically perceived merely as tools to exclude benign or unrelated variants, QVs actually involve complex, distributive steps throughout the analysis pipeline. 
 We propose a redefinition of QVs by outlining several common sets and demonstrating their roles within analysis pipelines, thereby illuminating their integration and standardisation for specific analytical scenarios. 
 By introducing a new vocabulary and a standard reference model, we aim to enhance understanding and communication about QVs, thus improving methodological discussions across disciplines.
@@ -84,9 +81,10 @@ Generally, the selection of \ac{qv}s are based on well-established best practice
 \cite{richards2015standards, li2017standards, li2017intervar,riggs2020technical}, 
 established work-flows 
 \cite{pedersen2021effective,anderson2010data,uffelmann2021genome}.
+However, a standard guide for \ac{qv} themselves remains missing.
 \ac{prs} reporting standards to have been developed to encourage their application and translation as well as open cataloguing for reproducibility and systematic evaluation
 \cite{wand2021improving, lambert2021polygenic}.
-However, a standard guide for \ac{qv} themselves remains missing.
+We propose an equivalent is beneficial for \ac{qv}.
 
 The choice of \ac{qv} thresholds often depends on the specific context of the research or clinical needs. 
 For instance, \ac{gwas} might prioritise common variants, 
@@ -145,8 +143,8 @@ Rigorous \ac{qv} selection and categorisation in genetic research and diagnostic
 
 \begin{figure}[h!]
     \centering
-   \includegraphics[width=0.8\textwidth]{./images/candidate_variants_sequence_to_matrix.pdf}
-      \includegraphics[width=0.8\textwidth]{./images/candidate_variants_sequence_annotation.pdf}
+   \includegraphics[width=0.8\textwidth]{./images/candidate_variants_sequence_to_matrix_pink.pdf}
+      \includegraphics[width=0.8\textwidth]{./images/candidate_variants_sequence_annotation_pink.pdf}
     \caption{Top: From raw omics to data matrix.  We focus on DNA variants in \ac{qv} but the same concept applies to other datasets.
     Bottom: The initial variant detection pipeline generlly requires QC and filtering rules that are the first \ac{qv} steps. Once complete, annotation of variants can follow. Further \ac{qv} steps can be run based on these new annotations.}
 %    \label{fig:candidate_variants_sequence_to_matrix}
@@ -481,7 +479,7 @@ This is a joint paediatric national data stream where one of the objectives is t
 We optimise the processing pipelines by using consensus raw datasets (e.g. WGS in patients and families), which is annotated and filtered to several \ac{qv} levels.
 The resulting pre-processed datasets are suitable for a rage of analysis including \ac{gwas}, \ac{vsat}, single-case clinical genetics reports, machine learning, and joint multiomic analysis. 
 
-National-scale projects are a prime example where data is reused many times and naturally requires the use of \ac{qv}, currently in the traditional format.
+National-scale projects reuse data many times and naturally require the use of \ac{qv}, currently in the traditional format; mixed throughout pipelines without explicit distinction.
 The  Genomics England 100,000 Genomes Project performs central automated analysis with interpretation and clinical reporting \cite{turnbull2018100}. 
 This data is then used in many subsequent research projects. 
 One significant application of \ac{qv} protocols is in genomics-based newborn screening, which has been gaining traction as a pivotal healthcare innovation
@@ -606,6 +604,32 @@ Once acknowledged, these features can be addressed potentially with existing met
 Increasingly deep phenotyping and precision medicine with omic data are reshaping data integration strategies. 
 Standardised database formats are thus critical for genomics and \ac{qv} should not be an afterthought \cite{bycroft2018uk, all2024genomic, ogishima2021dbtmm}.
 
+\subsection{Applications in simple independent tests} 
+
+\begin{figure}[h]
+    \centering
+   \includegraphics[width=0.99\textwidth]{./images/qv_matrix.pdf}
+    \caption{Genotype matrices for three different layers of \ac{qv} analysed in genetic studies. Each matrix represents a specific set, showing the genotypes of three individuals for three SNPs (SNP1, SNP2, SNP3).
+    In the \ac{qv}1 layer, SNP1 and SNP3 qualify as a QV (highlighted in red). The genotypes are for \ac{qv} are coded as 0 for homozygous reference, 1 for heterozygous, and 2 for homozygous alternative.
+    }
+    \label{fig:qv_matrix}
+\end{figure}
+
+An example of a multi-part analysis with sets \ac{qv} sets 1, 2, and 3, 
+is illustrated in 
+\textbf{Figure \ref{fig:qv_matrix}}.
+For simplicity, we can assume that each set represents one \ac{qwas}.
+The outcomes of each test can subsequently be combined with statistical methods such as the \ac{acat} \cite{liu2019acat, li2020dynamic}.
+It becomes possible to aggregate and compare these results from separate tests. 
+This process combines p-values across different analyses or variant sets, accounting for the directions and magnitudes of the effects. 
+It not only enhances the power to detect significant associations, especially when variants have heterogeneous effects but also simplifies the interpretation of aggregated genomic data. 
+By employing \ac{acat}, we can synthesize findings from multiple QV filters applied to the same genomic dataset, leading to a more comprehensive understanding of the genetic architecture of traits under study. 
+This method is particularly useful in scenarios where variants across different QV sets may contribute in varying degrees to the phenotype, allowing for a nuanced analysis that respects the complexity of genomic data.
+The combination method must be adapted in scenarios where variants (or collapsed variant sets) do not overlap. 
+We have previously provided methods to plot the results of such analysis with \href{https://github.com/DylanLawless/archipelago}{archipelago}  (cite pre-print instead of package).
+
+
+
 \subsection{Applications in complex data and multiblock fusion} 
 
 Multiblock data fusion is an emerging yet nascent field in statistics and machine learning  which is championed by multi-omics. 
@@ -659,26 +683,29 @@ $$
 \text{logit}(p_i) = \log\left(\frac{p_i}{1 - p_i}\right) = \beta_0 + \sum_{k=1}^n \beta_k x_{ik} + \beta_{\text{geno}} G_i
 $$
 where:
-- \( p_i \) is the estimated probability that individual \( i \) is a case, based on their genotypic and covariate data,
-- \( \beta_0 \) is the intercept,
-- \( \beta_k \) are the coefficients for the covariates,
-- \( x_{ik} \) represents the covariate values for the \( i \)-th individual,
-- \( \beta_{\text{geno}} \) is the coefficient for the genetic effect,
-- \( G_i \) is the genotype of the \( i \)-th individual, coded as 0, 1, or 2.
+\( p_i \) is the estimated probability that individual \( i \) is a case, based on their genotypic and covariate data,
+\( \beta_0 \) is the intercept,
+\( \beta_k \) are the coefficients for the covariates,
+\( x_{ik} \) represents the covariate values for the \( i \)-th individual,
+\( \beta_{\text{geno}} \) is the coefficient for the genetic effect,
+\( G_i \) is the genotype of the \( i \)-th individual, coded as 0, 1, or 2  (representing the number of minor alleles).
 
 The following version shows the explicit GWAS model with QV notation:
+% $$\text{logit}(p_i) = \log\left(\frac{p_i}{1 - p_i}\right) = \beta_0 + \beta_1 \text{sex}_i + \beta_2 \text{log10(age)}_i + \sum_{j=1}^{10} \beta_{2+j} \text{PC}_j^{(i)} + \beta_{13} G_{\text{QV}_{i,v}}$$
+
 $$
-\text{logit}(p_i) = \log\left(\frac{p_i}{1 - p_i}\right) = \beta_0 + \beta_1 \text{sex}_i + \beta_2 \text{log10(age)}_i + \sum_{j=1}^{10} \beta_{2+j} \text{PC}_j^{(i)} + \beta_{13} G_{\text{QV}_{i,v}}
-$$
+\text{logit}(p_i) = \log\left(\frac{p_i}{1 - p_i}\right) = \beta_0 + \beta_1 \text{sex}_i + \beta_2 \text{log10(age)}_i + \sum_{j=1}^{10} \beta_{2+j} \text{PC}_j^{(i)} + \sum_{k=1}^{n} \beta_{13+k} G_{\text{QV}_{i,v,k}}
+$$\\
 where:
-- \( \beta_0 \) is the intercept,
-- \( \beta_1 \) adjusts for sex (1 if male, 0 if female),
-- \( \beta_2 \) adjusts for the log-transformed age in days,
-- \( \beta_3 \) to \( \beta_{12} \) correspond to the first ten principal components, adjusting for population stratification,
-- \( \beta_{13} \) is the effect of the genotype on the phenotype, with \( G_{\text{QV}_{i,v}} \) denoting the genotype of the \( i \)-th individual for the \( v \)-th variant in the QV set, coded as 0, 1, or 2 (representing the number of minor alleles).
+% \( \beta_0 \) is the intercept,
+\( \beta_1 \) adjusts for sex (1 if male, 0 if female),
+\( \beta_2 \) adjusts for the log-transformed age in days,
+\( \beta_3 \) to \( \beta_{12} \) correspond to the first ten principal components, adjusting for population stratification,
+%\( \beta_{13} \) is the effect of the genotype on the phenotype, with \( G_{\text{QV}_{i,v}} \) denoting the genotype of the \( i \)-th individual for the \( v \)-th variant in the QV set.
+ \( \beta_{13+k} \) represents the effects of the genotype on the phenotype for each additional qualifying variant set \( k \),
+\( G_{\text{QV}_{i,v,k}} \) denotes the genotype of the \( i \)-th individual for the \( v \)-th variant in the \( k \)-th \ac{qv} set.
 
-
-SKAT and its optimal unified version, SKAT-O, are now popular methods for gene-based association tests that accommodate multiple variants within a gene or variant set while accounting for their potentially differing directions and magnitudes of effects
+Likewise, SKAT and its optimal unified version, SKAT-O, are now popular methods for gene-based association tests that accommodate multiple variants within a gene or variant set while accounting for their potentially differing directions and magnitudes of effects
 \cite{wu2011rare, lee2012optimal}. 
 The logistic regression model for SKAT, taking into account the specific variants from the QV set, can be described as follows:
 $$
@@ -689,15 +716,15 @@ where:
 \( \gamma \) is an \( s \times 1 \) vector of regression coefficients of covariates,
 \( \beta \) is an \( m \times 1 \) vector of regression coefficients for genetic variants,
 \( G_{\text{QV}_{i,v}} \) denotes the genotype values for all variants \( v \) in the QV set for individual \( i \).
-
 The SKAT statistic is then:
 $$
 Q_S = (y - \hat{\pi})^\top K (y - \hat{\pi})
 $$
 where \( \hat{\pi} \) is the vector of the estimated probability of \( y \) under the null model, and \( K \) is the kernel matrix defined as \( G_{\text{QV}} W G_{\text{QV}}^\top \), with \( W \) being the diagonal weight matrix for the variants.
 
-With these familiar examples established, we can consider more complex models where other variants outside of the main \ac{qv} set can be assessed, which we describe in the next section. 
-It is important to emphasise the distinction we are considering: we are dealing with unobserved or unknown variants, rather than variants of unknown significance, in the Bayesian sense.
+With these familiar examples established, we can consider more complex models where other variants outside of the main \ac{qv} set can be assessed,  $QV_{1,...,n} $,
+which we describe in the next section. 
+These sets can represent different categorisations or stratifications of genetic variants that might be relevant under varying analytical conditions or specific studies.
 
 \subsection{Conceptual framework and statistical representation}
 
@@ -706,6 +733,7 @@ In \ac{gwas}, the transition from empirically testable variants (\ac{qv}1) to th
 However, due to technological constraints and gaps in genetic understanding, \ac{ax} remains largely theoretical and unverifiable empirically. 
 In contrast, \ac{qv}1 includes those variants from \ac{ax} that survive rigorous empirical filtering, applying standard \ac{gwas} pre-processing criteria such as --geno, --maf, --hwe, and --mind, aimed at ensuring the quality and relevance of data by removing variants based on missing genotype data, minor allele frequency, Hardy-Weinberg equilibrium deviations, and individual missing data thresholds.
 
+It is important to emphasise the distinction we are considering: we are dealing with unobserved or unknown variants, rather than variants of unknown significance, in the Bayesian sense.
 The mathematical representation of the relationship between \ac{ax} and \ac{qv}1 is crucial for understanding the impact of this transition. Firstly, the intersection operation:
 $$
 \text{TP} = QV\textsubscript{ax} \cap QV1,
