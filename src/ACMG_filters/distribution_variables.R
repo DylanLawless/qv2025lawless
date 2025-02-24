@@ -149,7 +149,7 @@ if ("SYMBOL" %in% names(dist_variables)) {
 
 library(patchwork)
 
-dist_patch <- (p1 + p2 + p3 + p4) / (p5 + p6 + p7) 
+dist_patch <- (p1 | p2 | p3 | p4) / (p5 + p6 + p7) 
 
 # "#fbd693"
 # "#fbc393"
@@ -159,5 +159,5 @@ dist_patch <- (p1 + p2 + p3 + p4) / (p5 + p6 + p7)
 # "#b86572"
 # "#7e676b"
 
-ggsave(paste(images_directory, file_suffix, "distribution_variables.pdf", sep = "") ,plot = dist_patch, width = 10, height = 10)
+ggsave(paste(images_directory, file_suffix, "distribution_variables.pdf", sep = "") ,plot = dist_patch, width = 8, height = 6)
 rm(dist_patch, dist_variables)

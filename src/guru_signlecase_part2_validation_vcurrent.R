@@ -72,7 +72,7 @@ p_validation <- ggplot(validation_combined, aes(x = as.factor(Var1), y = Count, 
   facet_wrap(~ Criterion, scales = "free") +
   labs(x = "ACMG score applied during criteria check", y = "Count of variants lablled", fill = "Method",
        title = "Comparison of ACMG criteria counts on disease cohort",
-       subtitle = "QV_acmg_v1.yaml vs Manually encoded") +
+       subtitle = "QV acmg_criteria.yaml vs Manually encoded") +
   theme_minimal() 
 
 p_validation

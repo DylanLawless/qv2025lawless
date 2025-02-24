@@ -825,20 +825,53 @@ We used a rare disease cohort of 940 individuals, pre-processed for
 For ease of reporting, this example was restricted to chromosome 1, which contained 596 qualifying variants after strict filtering (MAF < 0.01) and was further limited to known disease genes based on the Genomics England panel ``Primary immunodeficiency or monogenic inflammatory bowel disease,'' retrieved using our PanelAppRex R repository (\href{https://github.com/DylanLawless/PanelAppRex}{GitHub link}). 
 We prepared this annotation interpretation dataset in R with GuRu, our variant interpretation tool, which consolidates all annotation sources and scores variants. The annotated dataset was imported from gVCF format (output by VEP) and stored as a table of 596 variant rows with 377 annotation columns. A brief selection of the annotations used used for \ac{qv} is shown in \textbf{Figure~\ref{fig:guru_case_study_setup}}.
 
-\begin{figure}[ht]
+\begin{figure}[!h]
     \centering
-   \includegraphics[width=0.99\textwidth]{./images/Guru_singlecase_distribution_variables.pdf}
-       \caption{Example of the annotated dataset describing variant calls from the disease cohort on chromosome 1. The subset shown highlights key variables used in quality control and variant interpretation, resulting in 596 variants with 377 annotation fields per variant for 940 subjects.}
+   \includegraphics[width=0.85\textwidth]{./images/Guru_singlecase_distribution_variables.pdf}
+       \caption{Example of the annotated dataset describing variant calls from the disease cohort on chromosome 1. The subset shown highlights key variables used in quality control and variant interpretation, resulting in 596 variants with 377 annotation fields per variant for 940 subjects. Axis which contain many term labels are down sampled to list every tenth  label (n=10 samp).}
     \label{fig:guru_case_study_setup}
 \end{figure}
 
 We selected the first eight ACMG criteria for assigning pathogenicity scores to variants \cite{richards2015standards}. Of these eight, six were relevant for the cohort.
 First, we performed this analysis manually by hard coding each criterion in the script, reflecting a typical analysis scenario. Second, we imported the same criteria from the \ac{qc} YAML file to represent our standardised approach. We captured the outputs from both scoring methods and compared them, as shown in \textbf{Figure \ref{fig:guru_case_study_result}}.
+The \ac{qv} criteria in yaml format are found in file \texttt{qv\_files/acmg\_criteria.yaml} and are in the following style in 
+\textbf{box \ref{box:acmg_criteria_yaml}}:
 
-\begin{figure}[h]
+\begin{tcolorbox}[
+    % breakable,  % Allows the box to split over pages
+    colback=white!0,  % No background color (fully transparent)
+    colframe=black,  % Black border color
+    boxrule=1pt,  % Width of the border
+    arc=1mm,  % Radius of the corner rounding
+    outer arc=1mm,
+%    title=\textbf{Example diagrammatic representation}
+   title=\textbf{\refstepcounter{myboxcounter}\label{box:acmg_criteria_yaml}Box \themyboxcounter: qv\_files/acmg\_criteria.yaml}
+]
+
+\begin{verbatim}
+ACMG_PVS1:
+  description: >
+    Null variants (IMPACT = HIGH) in genes where 
+    loss-of-function causes disease.
+    Includes homozygous variants, dominant inheritance, 
+    and compound heterozygous cases.
+    Compound heterozygosity is considered when both 
+    variants are HIGH impact. WARNING: Not phase checked.
+  logic: "or"
+  conditions:
+    - condition:
+        field: IMPACT
+        value: "HIGH"
+        operator: "=="
+...
+\end{verbatim}
+\end{tcolorbox}
+
+
+\begin{figure}[!h]
 \centering
 \includegraphics[width=0.99\textwidth]{./images/Guru_singlecase_validation_of_yaml_vs_manual.pdf}
-\caption{GuRu case study with an ACMG criteria subset, showing a 100\% match between manually encoded and YAML-based methods for assigning pathogenicity scores.}
+\caption{GuRu case study with an ACMG criteria subset, showing a 100\% match between manually encoded and YAML-based methods (\texttt{qv\_files/acmg\_criteria.yaml}) for assigning pathogenicity scores.}
 \label{fig:guru_case_study_result}
 \end{figure}
 
@@ -850,7 +883,7 @@ We skipped the PS2 criterion, which requires confirmed de novo status in a patie
 
 Subsequently, we briefly demonstrate why such \ac{qv} criteria are necessary. In \textbf{Figure \ref{fig:guru_case_study_guruscores}}, we show the final annotation results for the test disease cohort by listing the number of criteria applied for both samples (cases) and variants. From this, the top candidate causal pathogenic variants can be automatically retrieved using ACMG scoring methods \cite{richards2015standards, tavtigian2020fitting}.
 
-\begin{figure}[ht]
+\begin{figure}[!h]
 \centering
 \includegraphics[width=0.49\textwidth]{./images/Guru_singlecase_criteria_per_sample_small.pdf}
 \includegraphics[width=0.49\textwidth]{./images/Guru_singlecase_variants_per_criteria_small.pdf}
