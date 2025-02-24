@@ -864,6 +864,10 @@ ACMG_PVS1:
         value: "HIGH"
         operator: "=="
 ...
+shasum -a 256 acmg_criteria.yaml | fold -w 32
+d91fde41a5fff48631adecba38773d61
+9ae8cd5cff9b9b42ef7f5efbd6bbfcdf
+acmg_criteria.yaml
 \end{verbatim}
 \end{tcolorbox}
 
@@ -879,7 +883,7 @@ Our results, presented in \textbf{Figure \ref{fig:guru_case_study_result}}, show
 
 The YAML criteria used here include \texttt{ACMG\_PS1}, described as``the same amino acid change was a previously established pathogenic variant regardless of nucleotide change.'' It includes \texttt{terms} containing ``pathogenic,'' applies to the \texttt{CLIN\_SIG} (clinical significance) annotation field, and uses ``or'' logic. We also included \texttt{ACMG\_PS3}, which describes well-established functional studies supporting a damaging effect on the gene product, with a user-defined inheritance pattern matching the genotype, and \texttt{ACMG\_PS5}, which covers compound heterozygosity with at least one high-impact variant (according to Ensembl VEP definitions). The \texttt{ACMG\_PM2} criterion states that the variant is absent from controls or present at extremely low frequency in gnomAD or other population databases. For \texttt{ACMG\_PM3}, the criterion checks for variants in trans with a pathogenic variant in recessive disorders, showing some overlap with PS5 because our rare disease cohort filtering already treats ``IMPACT = HIGH'' as pathogenic.
 
-We skipped the PS2 criterion, which requires confirmed de novo status in a patient with the disease and no family history, because no parental data were available. We also skipped PS4, which measures a significantly increased prevalence in affected individuals compared with controls, because that was evaluated in a separate case–control analysis for this cohort.
+We skipped the PS2 criterion, which requires confirmed de novo status in a patient with the disease and no family history, because no parental data were available. We also skipped PS4, which measures a significantly increased prevalence in affected individuals compared with controls, because that was evaluated in a separate case-control analysis for this cohort.
 
 Subsequently, we briefly demonstrate why such \ac{qv} criteria are necessary. In \textbf{Figure \ref{fig:guru_case_study_guruscores}}, we show the final annotation results for the test disease cohort by listing the number of criteria applied for both samples (cases) and variants. From this, the top candidate causal pathogenic variants can be automatically retrieved using ACMG scoring methods \cite{richards2015standards, tavtigian2020fitting}.
 
