@@ -1,0 +1,63 @@
+ACMG_PS1:
+  description: >
+    Apply multiple criteria including pathogenicity, and check against several fields.
+  terms:
+    - pathogenic
+    - likely_pathogenic
+  fields:
+    clinical_significance: CLIN_SIG
+  logic: "or"
+
+ACMG_PS3:
+  description: >
+    Well-established in vitro or in vivo functional studies supportive of a damaging effect on the gene or gene product.
+    User defined - disease panel ineritance pattern matching genotype. 
+  logic: "or"
+  conditions:
+    - condition:
+        field: genotype
+        value: 1
+        operator: "=="
+        additional_criteria:
+          field: Inheritance
+          values:
+            - AD
+            - AD/AR
+    - condition:
+        field: genotype
+        value: 2
+        operator: "=="
+        additional_criteria:
+          field: Inheritance
+          values:
+            - AD
+            - AD/AR
+            - AR
+            - XL
+            - XLR
+
+ACMG_PS5:
+  description: >
+    Compound heterozygosity with at least one HIGH impact variant. This is not phase checked.
+  logic: "and"
+  conditions:
+    - condition:
+        field: IMPACT
+        value: "HIGH"
+        operator: "=="
+    - condition:
+        group_by: 
+          - sample
+          - SYMBOL
+        count: ">1"
+
+
+ACMG_PM2:
+  description: >
+    Absent from controls (or at extremely low frequency if recessive) in gnmonAD, 1000 Genomes Project, etc.
+  logic: "and"
+  conditions:
+    - condition:
+        field: gnomAD_AF
+        value: 1e-6
+        operator: "<"
