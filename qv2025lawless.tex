@@ -44,7 +44,8 @@
  \acro{af}[AF]{Allele Frequency}
  \acro{gwas}[GWAS]{Genome Wide Association Test}
  \acro{maf}[MAF]{Minor Allele Frequency}
- \acro{prs}[PRS]{Polygenic Risk Score}
+ \acro{prs}[PRS]{Polygenic Risk Score} 
+  \acro{qc}[QC]{Quality Control}
  \acro{qv}[QV]{Qualifying variant}
  \acro{ax}[QV\textsubscript{ax}]{Axiomatic Variants}
   \acro{sf}[SF]{Secondary Findings}
@@ -55,12 +56,7 @@
   
 \clearpage
 \begin{abstract}
-Qualifying variants (QV) are specific genomic alterations selected through defined criteria within processing pipelines, essential for downstream analyses in genetic research and clinical diagnostics. 
-This paper presents QV not merely as simple filtering criteria but as a dynamic and multifaceted concept critical for various genomic analysis scenarios. 
-We argue that standardising and optimising QVs for advanced multi-stage use, rather than limiting them to conceptually simplistic, single-stage filters, can significantly advance omics research and open up new theoretical domains. 
-Typically perceived merely as tools to exclude benign or unrelated variants, QVs actually involve complex, distributive steps throughout the analysis pipeline. 
-We propose a redefinition of QVs by outlining several common sets and demonstrating their roles within analysis pipelines, thereby illuminating their integration and standardisation for specific analytical scenarios. 
-By introducing a new vocabulary and a standard reference model, we aim to enhance understanding and communication about QVs, thus improving methodological discussions across disciplines.
+Qualifying variants (QV) are specific genomic alterations chosen through defined criteria in processing pipelines, and are essential for analyses in genetic research and clinical diagnostics. This paper reframes QVs not merely as simple filtering criteria but as a dynamic, multifaceted concept crucial for varied genomic analysis scenarios. We argue that standardising and optimising QVs for advanced, multi-stage use - rather than confining them to simplistic, single-stage filters - can significantly advance omics research and open new theoretical avenues. Although typically viewed as tools to exclude benign or unrelated variants, QVs actually involve complex, distributed steps throughout the analysis pipeline. We propose a redefinition of QVs by outlining several common sets and demonstrating their roles within analysis pipelines, thereby elucidating their integration and standardisation for specific analytical contexts. By introducing new terminology and a standard reference model, we aim to enhance understanding and communication about QVs, thus improving methodological discussions across disciplines. Finally, we present a validation case study demonstrating implementation of ACMG criteria in a disease cohort of 940 subjects with exome sequence data.
 \end{abstract}
 
 %Consider inviting:
@@ -75,7 +71,7 @@ By introducing a new vocabulary and a standard reference model, we aim to enhanc
 \label{sec:intro}
 
 \ac{qv}s are genomic alterations selected through specific criteria during genomic processing pipelines. These variants are essential for downstream analysis in genetic research and clinical diagnostics. This paper explores the application and conceptualisation of \ac{qv}s not merely as filtering criteria but as a dynamic concept crucial for various genomic analysis scenarios.
-Generally, the selection of \ac{qv}s follows well-established best practices in variant classification and reporting standards \cite{richards2015standards, li2017standards, li2017intervar, riggs2020technical}, as well as standardized workflows \cite{pedersen2021effective, anderson2010data, uffelmann2021genome}.
+Generally, the selection of \ac{qv}s follows well-established best practices in variant classification and reporting standards \cite{richards2015standards, li2017standards, li2017intervar, riggs2020technical, tavtigian2020fitting}, as well as standardized workflows \cite{pedersen2021effective, anderson2010data, uffelmann2021genome}.
 However, a standard guide for \ac{qv} themselves remains missing.
 \ac{prs} reporting standards have been developed to encourage their application and translation as well as open cataloguing for reproducibility and systematic evaluation
 \cite{wand2021improving, lambert2021polygenic}.
@@ -821,13 +817,80 @@ acmg_sf_v3.2.tsv
 
 Incorporating \texttt{qualifying\_variant\_set\_id} not only enhances transparency but also increases operational efficiency in omics data handling, facilitating precise and reproducible research across various projects.
 
+\section{Validation case study}
+
+We demonstrate that 100\% of criteria were correctly applied using the standardised \ac{qv} criteria compared with the typical manual version in our case study example.
+We used a rare disease cohort of 940 individuals, pre-processed for 
+\ac{qc} and a minimal \ac{qv} test set, as previously described (lawless spss 2025). 
+For ease of reporting, this example was restricted to chromosome 1, which contained 596 qualifying variants after strict filtering (MAF < 0.01) and was further limited to known disease genes based on the Genomics England panel ``Primary immunodeficiency or monogenic inflammatory bowel disease,'' retrieved using our PanelAppRex R repository (\href{https://github.com/DylanLawless/PanelAppRex}{GitHub link}). 
+We prepared this annotation interpretation dataset in R with GuRu, our variant interpretation tool, which consolidates all annotation sources and scores variants. The annotated dataset was imported from gVCF format (output by VEP) and stored as a table of 596 variant rows with 377 annotation columns. A brief selection of the annotations used used for \ac{qv} is shown in \textbf{Figure~\ref{fig:guru_case_study_setup}}.
+
+\begin{figure}[ht]
+    \centering
+   \includegraphics[width=0.99\textwidth]{./images/Guru_singlecase_distribution_variables.pdf}
+       \caption{Example of the annotated dataset describing variant calls from the disease cohort on chromosome 1. The subset shown highlights key variables used in quality control and variant interpretation, resulting in 596 variants with 377 annotation fields per variant for 940 subjects.}
+    \label{fig:guru_case_study_setup}
+\end{figure}
+
+We selected the first eight ACMG criteria for assigning pathogenicity scores to variants \cite{richards2015standards}. Of these eight, six were relevant for the cohort.
+First, we performed this analysis manually by hard coding each criterion in the script, reflecting a typical analysis scenario. Second, we imported the same criteria from the \ac{qc} YAML file to represent our standardised approach. We captured the outputs from both scoring methods and compared them, as shown in \textbf{Figure \ref{fig:guru_case_study_result}}.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.99\textwidth]{./images/Guru_singlecase_validation_of_yaml_vs_manual.pdf}
+\caption{GuRu case study with an ACMG criteria subset, showing a 100\% match between manually encoded and YAML-based methods for assigning pathogenicity scores.}
+\label{fig:guru_case_study_result}
+\end{figure}
+
+Our results, presented in \textbf{Figure \ref{fig:guru_case_study_result}}, show a 100\% match between the two methods, demonstrating that the criteria can be imported from YAML and applied programmatically to achieve the same outcome. This is not necessarily surprising, as the burden of accuracy remains in the implementation. However, the \ac{qc} YAML file acts as a shareable, standalone resource that can be adapted for different pipelines or programming languages, ensuring reproducibility for \ac{qv} criteria.
+
+The YAML criteria used here include \texttt{ACMG\_PS1}, described as``the same amino acid change was a previously established pathogenic variant regardless of nucleotide change.'' It includes \texttt{terms} containing ``pathogenic,'' applies to the \texttt{CLIN\_SIG} (clinical significance) annotation field, and uses ``or'' logic. We also included \texttt{ACMG\_PS3}, which describes well-established functional studies supporting a damaging effect on the gene product, with a user-defined inheritance pattern matching the genotype, and \texttt{ACMG\_PS5}, which covers compound heterozygosity with at least one high-impact variant (according to Ensembl VEP definitions). The \texttt{ACMG\_PM2} criterion states that the variant is absent from controls or present at extremely low frequency in gnomAD or other population databases. For \texttt{ACMG\_PM3}, the criterion checks for variants in trans with a pathogenic variant in recessive disorders, showing some overlap with PS5 because our rare disease cohort filtering already treats ``IMPACT = HIGH'' as pathogenic.
+
+We skipped the PS2 criterion, which requires confirmed de novo status in a patient with the disease and no family history, because no parental data were available. We also skipped PS4, which measures a significantly increased prevalence in affected individuals compared with controls, because that was evaluated in a separate case–control analysis for this cohort.
+
+Subsequently, we briefly demonstrate why such \ac{qv} criteria are necessary. In \textbf{Figure \ref{fig:guru_case_study_guruscores}}, we show the final annotation results for the test disease cohort by listing the number of criteria applied for both samples (cases) and variants. From this, the top candidate causal pathogenic variants can be automatically retrieved using ACMG scoring methods \cite{richards2015standards, tavtigian2020fitting}.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.49\textwidth]{./images/Guru_singlecase_criteria_per_sample_small.pdf}
+\includegraphics[width=0.49\textwidth]{./images/Guru_singlecase_variants_per_criteria_small.pdf}
+\caption{Overview of the final annotation interpretation for the test disease cohort, illustrating the number of criteria applied both for subject samples (left) and for variants (right). This facilitates subsequent retrieval of the top candidate pathogenic variants automatically.}
+\label{fig:guru_case_study_guruscores}
+\end{figure}
+
+%> print(validation_combined)
+%   Var1 Count Criterion    method
+%1     0   589 ACMG_PVS1   QV_yaml
+%2     8     7 ACMG_PVS1   QV_yaml
+%3     0   562  ACMG_PS1   QV_yaml
+%4     4    34  ACMG_PS1   QV_yaml
+%5     0   435  ACMG_PS3   QV_yaml
+%6     4   161  ACMG_PS3   QV_yaml
+%7     0   584  ACMG_PS5   QV_yaml
+%8     4    12  ACMG_PS5   QV_yaml
+%9     0   591  ACMG_PM2   QV_yaml
+%10    2     5  ACMG_PM2   QV_yaml
+%11    0   570  ACMG_PM3   QV_yaml
+%12    2    26  ACMG_PM3   QV_yaml
+%13    0   589 ACMG_PVS1 QV_manual
+%14    8     7 ACMG_PVS1 QV_manual
+%15    0   562  ACMG_PS1 QV_manual
+%16    4    34  ACMG_PS1 QV_manual
+%17    0   435  ACMG_PS3 QV_manual
+%18    4   161  ACMG_PS3 QV_manual
+%19    0   584  ACMG_PS5 QV_manual
+%20    4    12  ACMG_PS5 QV_manual
+%21    0   591  ACMG_PM2 QV_manual
+%22    2     5  ACMG_PM2 QV_manual
+%23    0   570  ACMG_PM3 QV_manual
+%24    2    26  ACMG_PM3 QV_manual
+%> print(dim(df))
+%[1] 596 377
 
 \section{Conclusions}
-This study has underscored the critical importance of \ac{qv} standardisation within genomic research. 
-By delineating a clear framework for integrating \ac{qv} protocols into genomic analysis pipelines, we have highlighted how systematic management of these variables enhances reproducibility, accuracy, and efficiency in genetic studies.
-As genomic technologies and data complexities grow, the need for robust, scalable, and adaptable \ac{qv} protocols becomes increasingly apparent. 
-Future research should focus on expanding these frameworks to incorporate emerging technologies and analytical challenges, thereby continuously improving the fidelity and utility of genomic data interpretation across domains.
+We emphasise the critical importance of \ac{qv} standardisation in genomic research. By proposing a clear framework for incorporating \ac{qv} protocols into analysis pipelines, we highlight how systematic handling of these variables enhances reproducibility, accuracy, and efficiency in genetic studies. As genomic technologies and data complexities expand, the need for robust, scalable, and adaptable \ac{qv} protocols becomes ever more pressing. Future work should extend these frameworks to accommodate emerging technologies and analytical challenges, further improving the fidelity and utility of genomic data interpretation across diverse applications.
 
+\clearpage
 \bibliographystyle{unsrtnat}
 \bibliography{references}  %%% Uncomment this line and comment out the ``thebibliography'' section below to use the external .bib file (using bibtex) .
 

@@ -114,19 +114,62 @@ df <- df %>% dplyr::select(ACMG_BP8, everything())
 # Custom logic for BP8
 
 # PVS1 ----
-# PVS1 are null variants where IMPACT=="HIGH" and inheritance match, in gene where LoF cause disease.
-df$ACMG_PVS1 <- NA
-df <- df %>% dplyr::select(ACMG_PVS1, everything())
-df$ACMG_PVS1 <- ifelse(df$IMPACT == "HIGH" & df$genotype == 2, "PVS1", NA) # homozygous
-df$ACMG_PVS1 <- ifelse(df$IMPACT == "HIGH" & df$Inheritance == "AD", "PVS1", df$ACMG_PVS1) # dominant
-# df |> filter(ACMG_PVS1 == "PVS1")
 
-# include comp_het if both HIGH impact. WARNING NOT PHASE CHECKED
-df <- df |>
-  group_by(sample, SYMBOL) |>
-  mutate(ACMG_PVS1 = ifelse(ACMG_PVS1 == "PVS1", "PVS1", 
-                            ifelse(sum(IMPACT == "HIGH" & comp_het_flag == 1) >= 2 & IMPACT == "HIGH", "PVS1", ACMG_PVS1))) %>%
-  ungroup() 
+
+library(yaml)
+library(dplyr)
+
+# Load ACMG criteria from YAML file
+acmg_criteria <- yaml::read_yaml("./qv_files/acmg_criteria.yaml")
+
+# Define function to apply ACMG_PVS1 dynamically
+apply_acmg_pvs1 <- function(df, criteria) {
+  df$ACMG_PVS1 <- NA  # Initialize column
+  
+  # Extract conditions from YAML
+  impact_field <- criteria$conditions[[1]]$condition$field
+  impact_value <- criteria$conditions[[1]]$condition$value
+  genotype_field <- criteria$conditions[[2]]$condition$field
+  genotype_value <- criteria$conditions[[2]]$condition$value
+  inheritance_field <- criteria$conditions[[3]]$condition$field
+  inheritance_value <- criteria$conditions[[3]]$condition$value
+  group_fields <- criteria$conditions[[4]]$condition$group_by
+  comp_het_field <- criteria$conditions[[4]]$condition$additional_criteria$field
+  comp_het_value <- criteria$conditions[[4]]$condition$additional_criteria$value
+  
+  # Apply homozygous & dominant inheritance conditions
+  df$ACMG_PVS1 <- ifelse(df[[impact_field]] == impact_value & df[[genotype_field]] == genotype_value, "PVS1", NA)
+  df$ACMG_PVS1 <- ifelse(df[[impact_field]] == impact_value & df[[inheritance_field]] == inheritance_value, "PVS1", df$ACMG_PVS1)
+  
+  # Apply compound heterozygosity condition
+  df <- df |>
+    group_by(across(all_of(group_fields))) |>
+    mutate(ACMG_PVS1 = ifelse(ACMG_PVS1 == "PVS1", "PVS1", 
+                              ifelse(sum(!!sym(impact_field) == impact_value & !!sym(comp_het_field) == comp_het_value) >= 2 & !!sym(impact_field) == impact_value, "PVS1", ACMG_PVS1))) |>
+    ungroup()
+  
+  return(df)
+}
+
+# Apply the function to assign PVS1 labels
+df <- apply_acmg_pvs1(df, acmg_criteria$ACMG_PVS1)
+
+# View results
+table(df$ACMG_PVS1)
+
+# PVS1 are null variants where IMPACT=="HIGH" and inheritance match, in gene where LoF cause disease.
+# df$ACMG_PVS1 <- NA
+# df <- df %>% dplyr::select(ACMG_PVS1, everything())
+# df$ACMG_PVS1 <- ifelse(df$IMPACT == "HIGH" & df$genotype == 2, "PVS1", NA) # homozygous
+# df$ACMG_PVS1 <- ifelse(df$IMPACT == "HIGH" & df$Inheritance == "AD", "PVS1", df$ACMG_PVS1) # dominant
+# # df |> filter(ACMG_PVS1 == "PVS1")
+# 
+# # include comp_het if both HIGH impact. WARNING NOT PHASE CHECKED
+# df <- df |>
+#   group_by(sample, SYMBOL) |>
+#   mutate(ACMG_PVS1 = ifelse(ACMG_PVS1 == "PVS1", "PVS1", 
+#                             ifelse(sum(IMPACT == "HIGH" & comp_het_flag == 1) >= 2 & IMPACT == "HIGH", "PVS1", ACMG_PVS1))) %>%
+#   ungroup() 
 # df |> filter(ACMG_PVS1 == "PVS1")
 
 # PS1 ----
@@ -301,13 +344,54 @@ table(df$ACMG_PM2)
 # PM3 ----
 # For recessive disorders, detected in trans with a pathogenic variant
 # some redundancy with our PS5 since our rare disease cohort filtering call IMPACT==HIGH equates pathogenic
+
+# Load ACMG criteria from YAML file
+acmg_criteria <- yaml::read_yaml("./qv_files/acmg_criteria.yaml")
+pm3_criteria <- acmg_criteria$ACMG_PM3
+
 df$ACMG_PM3 <- NA
-df <- df %>% dplyr::select(ACMG_PM3, everything())
-df <- df %>%
-  group_by(sample, SYMBOL) %>%
-  mutate(ACMG_PM3 = ifelse(comp_het_flag == 1 & (ACMG_PS1 == "PS1" | ACMG_PS5 == "PS5"), 
-                           "PM3", ACMG_PM3)) %>%
-  ungroup()
+
+apply_acmg_pm3 <- function(df, criteria) {
+  comp_het_field <- criteria$conditions[[1]]$condition$field
+  comp_het_value <- criteria$conditions[[1]]$condition$value
+  comp_het_operator <- criteria$conditions[[1]]$condition$operator
+  
+  ps1_field <- criteria$conditions[[2]]$condition$field
+  ps1_value <- criteria$conditions[[2]]$condition$value
+  ps1_operator <- criteria$conditions[[2]]$condition$operator
+  
+  ps5_field <- criteria$conditions[[3]]$condition$field
+  ps5_value <- criteria$conditions[[3]]$condition$value
+  ps5_operator <- criteria$conditions[[3]]$condition$operator
+  
+  # Construct queries
+  comp_het_query <- paste(comp_het_field, comp_het_operator, shQuote(comp_het_value))
+  ps1_query <- paste(ps1_field, ps1_operator, shQuote(ps1_value))
+  ps5_query <- paste(ps5_field, ps5_operator, shQuote(ps5_value))
+  
+  print(paste("Query to evaluate:", comp_het_query, "& (", ps1_query, "OR", ps5_query, ")"))
+  
+  df <- df %>%
+    group_by(sample, SYMBOL) %>%
+    mutate(ACMG_PM3 = ifelse(
+      eval(parse(text = comp_het_query)) & (eval(parse(text = ps1_query)) | eval(parse(text = ps5_query))), 
+      "PM3", ACMG_PM3)) %>%
+    ungroup()
+  
+  return(df)
+}
+
+df <- apply_acmg_pm3(df, pm3_criteria)
+print(table(df$ACMG_PM3))
+
+
+# df$ACMG_PM3 <- NA
+# df <- df %>% dplyr::select(ACMG_PM3, everything())
+# df <- df %>%
+#   group_by(sample, SYMBOL) %>%
+#   mutate(ACMG_PM3 = ifelse(comp_het_flag == 1 & (ACMG_PS1 == "PS1" | ACMG_PS5 == "PS5"),
+#                            "PM3", ACMG_PM3)) %>%
+#   ungroup()
 # df |> filter(ACMG_PM3 == "PM3")
 
 # PP3 in silico ----
@@ -708,7 +792,7 @@ p.variants_per_criteria <- df |>
   guides(fill=FALSE) +
   scale_fill_scico(palette = 'acton', direction = 1) # batlowK, acton, lajolla, lapaz, turku
 p.variants_per_criteria
-ggsave(paste(images_directory ,file_suffix, "variants_per_criteria.pdf", sep = "") ,plot = p.variants_per_criteria , width = 9, height = 5)
+ggsave(paste(images_directory ,file_suffix, "variants_per_criteria_small.pdf", sep = "") ,plot = p.variants_per_criteria , width = 4, height = 3)
 
 # Check we only have approx. 1 "casual" variant per sample
 p.criteria_per_sample <- df %>%
@@ -722,7 +806,7 @@ p.criteria_per_sample <- df %>%
   guides(fill=FALSE) +
   scale_fill_scico(palette = 'acton', direction = 1) # batlowK, acton, lajolla, lapaz, turku
 p.criteria_per_sample
-ggsave(paste(images_directory ,file_suffix, "criteria_per_sample.pdf", sep = "") ,plot = p.criteria_per_sample, width = 9, height = 5)
+ggsave(paste(images_directory ,file_suffix, "criteria_per_sample_small.pdf", sep = "") ,plot = p.criteria_per_sample, width = 4, height = 3)
 
 # as table
 df |> 

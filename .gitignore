@@ -1,5 +1,5 @@
-data/bcftools_gatk_norm_maf01.recode_vep_conda_impact_iuis_gnomad_af1_chr_2.vcf.gz
-data/bcftools_gatk_norm_maf01.recode_vep_conda_impact_iuis_gnomad_af1_chr_2.vcf.gz.tbi
+data/bcftools*
+data/bcftools*
 
 ## Core latex/pdflatex auxiliary files:
 *.aux

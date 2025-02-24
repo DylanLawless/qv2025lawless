@@ -51,7 +51,7 @@ varsome <- read.table(file = "../ref/varsome_calibrated_insilico_thresholds.tsv"
 # Define the chromosome identifiers
 # chromosomes <- c(1:22, "X")
 # chromosomes <- c(21:22, "X") # TEMP TEST
-chromosomes <- c(2)
+chromosomes <- c(1)
 
 # Generate file names using paste0 and the chromosome identifiers
 file_list <- paste0(

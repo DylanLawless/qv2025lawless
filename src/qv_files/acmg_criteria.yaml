@@ -1,9 +1,37 @@
+ACMG_PVS1:
+  description: >
+    Null variants (IMPACT = HIGH) in genes where loss-of-function causes disease.
+    Includes homozygous variants, dominant inheritance, and compound heterozygous cases.
+    Compound heterozygosity is considered when both variants are HIGH impact. WARNING: Not phase checked.
+  logic: "or"
+  conditions:
+    - condition:
+        field: IMPACT
+        value: "HIGH"
+        operator: "=="
+    - condition:
+        field: genotype
+        value: 2
+        operator: "=="
+    - condition:
+        field: Inheritance
+        value: "AD"
+        operator: "=="
+    - condition:
+        group_by:
+          - sample
+          - SYMBOL
+        count: ">=2"
+        additional_criteria:
+          field: comp_het_flag
+          value: 1
+          operator: "=="
+
 ACMG_PS1:
   description: >
-    Apply multiple criteria including pathogenicity, and check against several fields.
+    The same amino acid change was a previously established pathogenic variant regardless of nucleotide change. 
   terms:
     - pathogenic
-    - likely_pathogenic
   fields:
     clinical_significance: CLIN_SIG
   logic: "or"
@@ -61,3 +89,24 @@ ACMG_PM2:
         field: gnomAD_AF
         value: 1e-6
         operator: "<"
+
+ACMG_PM3:
+  description: >
+    For recessive disorders, detected in trans with a pathogenic variant.
+    Some redundancy with PS5, as rare disease cohort filtering considers IMPACT == HIGH as pathogenic.
+  logic: "and"
+  conditions:
+    - condition:
+        field: comp_het_flag
+        value: 1
+        operator: "=="
+    - condition:
+        field: ACMG_PS1
+        value: "PS1"
+        operator: "=="
+        logic: "or"
+    - condition:
+        field: ACMG_PS5
+        value: "PS5"
+        operator: "=="
+
