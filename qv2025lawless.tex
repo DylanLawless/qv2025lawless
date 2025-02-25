@@ -795,6 +795,10 @@ We provide several examples for generating unique identifiers:
     \item \textbf{Integrating standards:} Use standards such as SNOMED CT with local identifiers to form comprehensive, domain-specific identifiers.
 \end{enumerate}
 
+We demonstrate an example analysis plan (or result database entry) in \textbf{box \ref{box:example_concept}}. 
+This lists the pipeline used, three hypothetical internal \ac{qv} sets (\texttt{qv1, qv2, qv3}) and one well-known public shared \ac{qv} set \texttt{acmg\_sf\_v3.2}  where the sha256 can be confirmed.
+Anyone reviewing the analysis results can be sure that \ac{qv} criteria \texttt{acmg\_sf\_v3.2} has been included in the protocol.
+
 \begin{tcolorbox}[
     % breakable,  % Allows the box to split over pages
     colback=white!0,  % No background color (fully transparent)
@@ -807,9 +811,9 @@ We provide several examples for generating unique identifiers:
 ]
 
 pipeline: \colorbox{colorSUNSET1!30}{\texttt{pipeline DNA SNV INDEL v1}}\\
-qualifying\_variant\_set\_id: \colorbox{colorSUNSET2!60}{\texttt{qv1}}\\
-qualifying\_variant\_set\_id: \colorbox{colorSUNSET2!60}{\texttt{qv2}}\\
-qualifying\_variant\_set\_id: \colorbox{colorSUNSET2!60}{\texttt{qv3}}\\
+qualifying\_variant\_set\_id: \colorbox{colorSUNSET2!60}{\texttt{qv1\_20250201.yaml}}\\
+qualifying\_variant\_set\_id: \colorbox{colorSUNSET2!60}{\texttt{qv2\_20250201.yaml}}\\
+qualifying\_variant\_set\_id: \colorbox{colorSUNSET2!60}{\texttt{qv3\_20250201.yaml}}\\
 qualifying\_variant\_set\_id: \colorbox{colorSUNSET2!60}{\texttt{acmg\_sf\_v3.2}}\\
 
 where 
@@ -826,9 +830,11 @@ Incorporating \texttt{qualifying\_variant\_set\_id} not only enhances transparen
 \section{Validation case study}
 
 We demonstrate that 100\% of criteria were correctly applied using the standardised \ac{qv} criteria compared with the typical manual version in our case study example.
+In this process we applied an \ac{acmg} variant classification
+protocol \cite{richards2015standards} using a standardised \ac{qv} criteria in YAML format.
 We used a rare disease cohort of 940 individuals, pre-processed for 
 \ac{qc} and a minimal \ac{qv} test set, as previously described (lawless spss 2025). 
-For ease of reporting, this example was restricted to chromosome 1, which contained 596 qualifying variants after strict filtering (MAF < 0.01) and was further limited to known disease genes based on the Genomics England panel ``Primary immunodeficiency or monogenic inflammatory bowel disease,'' retrieved using our PanelAppRex R repository (\href{https://github.com/DylanLawless/PanelAppRex}{GitHub link}). 
+For ease of reporting, this example was restricted to chromosome 1, which contained 596 qualifying variants after strict filtering (MAF < 0.01) and limited to known disease genes based on the Genomics England panel ``Primary immunodeficiency or monogenic inflammatory bowel disease,'' retrieved using our PanelAppRex R repository (\href{https://github.com/DylanLawless/PanelAppRex}{GitHub link}). 
 We prepared this annotation interpretation dataset in R with GuRu, our variant interpretation tool, which consolidates all annotation sources and scores variants. The annotated dataset was imported from gVCF format (output by VEP) and stored as a table of 596 variant rows with 377 annotation columns. A brief selection of the annotations used used for \ac{qv} is shown in \textbf{figure \ref{fig:guru_case_study_setup}}.
 
 \begin{figure}[!h]
@@ -840,7 +846,7 @@ We prepared this annotation interpretation dataset in R with GuRu, our variant i
 
 We selected the first eight ACMG criteria for assigning pathogenicity scores to variants \cite{richards2015standards}. Of these eight, six were relevant for the cohort.
 First, we performed this analysis manually by hard coding each criterion in the script, reflecting a typical analysis scenario. Second, we imported the same criteria from the \ac{qc} YAML file to represent our standardised approach. We captured the outputs from both scoring methods and compared them, as shown in \textbf{figure \ref{fig:guru_case_study_result}}.
-The \ac{qv} criteria in yaml format are found in file \texttt{qv\_files/acmg\_criteria.yaml} and are in the following style in 
+The \ac{qv} criteria in YAML format are found in file \texttt{qv\_files/acmg\_criteria.yaml} and are in the following style in 
 \textbf{box \ref{box:acmg_criteria_yaml}}:
 
 \begin{tcolorbox}[
