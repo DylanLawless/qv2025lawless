@@ -26,7 +26,7 @@
 %\author[1]{Consortium Members}
 %\author[1]{Luregn J. Schlapbach\thanks{Addresses for correspondence: \href{mailto:email@epfl.ch}{email@epfl.ch}}}
 
-\affil[1]{Department of Intensive Care and Neonatology and Children’s Research Centre, University Children's Hospital Zurich, University of Zurich, Zurich, Switzerland.}
+\affil[1]{Department of Intensive Care and Neonatology, University Children's Hospital Zürich, University of Zürich, Switzerland.}
 \affil[2]{Global Health Institute, School of Life Sciences, École Polytechnique Fédérale de Lausanne, Switzerland.}
 
 \maketitle
@@ -509,6 +509,7 @@ For instance,
 They focused on broader genomic coverage including structural and non-coding variants, identifying causative variants in 8.2\% of cases previously undetected by exome sequencing.
 
 \subsection{Secondary findings}
+\label{sec:sf}
 The \ac{acmg} \ac{sf} v3.2 list, exemplifies a well-defined and impactful application of \ac{qv} standards in genomic medicine 
 \cite{miller2023acmg}. 
 This list specifies gene-phenotype pairs recommended for reporting as secondary findings during clinical exome and genome sequencing. 
@@ -589,6 +590,14 @@ For each gene entry in genes:
     input.vcf > output_{gene['gene']}_qv_sf.vcf
 \end{verbatim}
 \end{tcolorbox}
+
+\section{Alignment with patient and public involvement needs}
+A key benefit of our framework is that it provides explicit citable documentation of which genetic variants are included or excluded in a database or report. 
+This transparency allows both analysts and patients to clearly see how filtering is performed, thereby bolstering trust and facilitating meaningful patient and public involvement (PPI). 
+For example, as illustrated in 
+\textbf{section \ref{sec:sf}}
+ both the analyst and the patient can confirm that the \ac{acmg} clinical guidelines on \ac{sf} have been applied. 
+This ensures that important findings-such as ruling out false negatives like ``no known causes of hereditary breast and/or ovarian cancer''-are not overlooked, ultimately enhancing patient care and informed decision-making.
 
 \section{Challenges and innovations}
 \subsection{Avoiding pitfalls}
