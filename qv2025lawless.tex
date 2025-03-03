@@ -22,12 +22,13 @@
 \author[1]{Dylan Lawless\thanks{Addresses for correspondence: \href{mailto:Dylan.Lawless@uzh.ch}{Dylan.Lawless@uzh.ch}}}
 \author[2]{Ali Saadat}
 \author[2]{Simon Boutry}
+\author[3]{Sabine Österle}
 \author[2]{\rm Jacques Fellay}
 %\author[1]{Consortium Members}
-%\author[1]{Luregn J. Schlapbach\thanks{Addresses for correspondence: \href{mailto:email@epfl.ch}{email@epfl.ch}}}
-
+\author[1]{Luregn J. Schlapbach}
 \affil[1]{Department of Intensive Care and Neonatology, University Children's Hospital Zürich, University of Zürich, Switzerland.}
 \affil[2]{Global Health Institute, School of Life Sciences, École Polytechnique Fédérale de Lausanne, Switzerland.}
+\affil[3]{Personalized Health Informatics Group, SIB Swiss Institute of Bioinformatics, Basel, Switzerland.}
 
 \maketitle
 \justify
@@ -44,13 +45,18 @@
  \acro{acat}[ACAT]{Aggregated Cauchy Association Test }
  \acro{acmg}[ACMG]{American College of Medical Genetics and Genomics}
  \acro{af}[AF]{Allele Frequency}
+ \acro{ad}[AD]{Autosomal Dominant}
+ \acro{ar}[AR]{Autosomal Recessive}
  \acro{gwas}[GWAS]{Genome Wide Association Test}
  \acro{maf}[MAF]{Minor Allele Frequency}
  \acro{prs}[PRS]{Polygenic Risk Score} 
-  \acro{qc}[QC]{Quality Control}
+ \acro{qc}[QC]{Quality Control}
  \acro{qv}[QV]{Qualifying variant}
+ \acro{rdf}[RDF]{Resource Description Framework}
  \acro{ax}[QV\textsubscript{ax}]{Axiomatic Variants}
-  \acro{sf}[SF]{Secondary Findings}
+ \acro{sf}[SF]{Secondary Findings}
+ \acro{skat}[SKAT]{sequence kernel association test} 
+ \acro{sphn}[SPHN]{Swiss Personalized Health Network}
  \acro{vqsr}[VQSR]{Variant Quality Score Recalibration}
  \acro{vsat}[VSAT]{Variant Set Association Test}
  \acro{wgs}[WGS]{Whole Genome Sequencing}
@@ -711,9 +717,9 @@ where:
  \( \beta_{13+k} \) represents the effects of the genotype on the phenotype for each additional qualifying variant set \( k \),
 \( G_{\text{QV}_{i,v,k}} \) denotes the genotype of the \( i \)-th individual for the \( v \)-th variant in the \( k \)-th \ac{qv} set.
 
-Likewise, SKAT and its optimal unified version, SKAT-O, are now popular methods for gene-based association tests that accommodate multiple variants within a gene or variant set while accounting for their potentially differing directions and magnitudes of effects
+Likewise, \ac{skat} and its optimal unified version, \ac{skat}-O, are now popular methods for gene-based association tests that accommodate multiple variants within a gene or variant set while accounting for their potentially differing directions and magnitudes of effects
 \cite{wu2011rare, lee2012optimal}. 
-The logistic regression model for SKAT, taking into account the specific variants from the QV set, can be described as follows:
+The logistic regression model for \ac{skat}, taking into account the specific variants from the QV set, can be described as follows:
 $$
 \log \left( \frac{P}{1-P} \right) = X_i \gamma + G_{\text{QV}_{i,v}} \beta
 $$
@@ -722,7 +728,7 @@ where:
 \( \gamma \) is an \( s \times 1 \) vector of regression coefficients of covariates,
 \( \beta \) is an \( m \times 1 \) vector of regression coefficients for genetic variants,
 \( G_{\text{QV}_{i,v}} \) denotes the genotype values for all variants \( v \) in the QV set for individual \( i \).
-The SKAT statistic is then:
+The \ac{skat} statistic is then:
 $$
 Q_S = (y - \hat{\pi})^\top K (y - \hat{\pi})
 $$
@@ -781,18 +787,24 @@ This integral effectively measures the total probability of variants that are co
 With this short demonstration of potential future directions, we conclude our exploration of the methodological framework and practical applications.
 
 \section{Enhancing semantic interoperability}
-The Swiss Personalized Health Network (SPHN) promotes data sharing based on the FAIR principles, supported through the SPHN RDF Schema to enhance semantic interoperability, particularly for clinical routine data
-\cite{wilkinson2016fair}. 
+The \ac{sphn} promotes data sharing based on the FAIR principles, supported through the \ac{sphn} \ac{rdf} Schema to enhance semantic interoperability, particularly for clinical routine data
+\cite{wilkinson2016fair, toure2023fairification}. 
 The recent extension of this schema incorporates genomic data processing, enriching it with detailed genomic-specific concepts that span from sample processing to the sequencing run \cite{van2023bridging}.
-This extension includes critical concepts such as the sequencing instrument and \ac{qc} metrics, which are necessary in ensuring the integrity and reproducibility of genomic analyses. To further integrate omics data within clinical frameworks, we have developed additional concepts, such as omic analysis results, that enable the reporting of outcomes directly tied to clinical care.
+This extension includes critical concepts such as the sequencing instrument and \ac{qc} metrics, which are necessary in ensuring the integrity and reproducibility of genomic analyses. To further integrate omics data within clinical frameworks, we have developed additional concepts, such as omic analysis results, that enable the reporting of outcomes directly tied to clinical care:
+\begin{itemize}
+\item \url{https://biomedit.ch/rdf/sphn-schema/sph#OmicsAnalysis}
+\item \url{https://biomedit.ch/rdf/sphn-schema/sph#OmicsAnalysisResult}
+\item \url{https://git.dcc.sib.swiss/sphn-semantic-framework/sphn-schema/}.
+\end{itemize}
 
+% Sabine suggests to show a bit more how these concepts can be used to record the processing information
 The \ac{qv} framework allows for the explicit recording of \ac{qv} sets used in analyses. 
 This is particularly beneficial as it provides a robust mechanism to track and verify the application of specific variant sets, such as those defined by the \ac{acmg} \ac{sf}, independent of internal protocol changes. 
 Such a feature ensures that users can query and confirm the use of specific \ac{qv} sets, like the \ac{acmg} \ac{sf}, without the need to delve into the specifics of source protocols. 
-This not only streamlines the verification process but also enhances the transparency and traceability of genomic analyses within the SPHN framework.
+This not only streamlines the verification process but also enhances the transparency and traceability of genomic analyses within the \ac{sphn} framework.
 
 Therefore, to enhance reproducibility and traceability in omics research, we propose the \ac{qv} Set ID (\texttt{qualifying\_variant\_set\_id} ). This identifier crucially links the variant sets used in analyses, facilitating precise and consistent replication of research methodologies.
-Implementing unique identifiers for qualifying variant sets is essential to ensure the reproducibility of omics analyses. These identifiers must be unique, consistent, and align with existing data management standards, integrating seamlessly into RDF schemas that incorporate standards like SNOMED CT.
+Implementing unique identifiers for qualifying variant sets is essential to ensure the reproducibility of omics analyses. These identifiers must be unique, consistent, and align with existing data management standards, integrating seamlessly into \ac{rdf} schemas that incorporate standards like SNOMED CT.
 
 As a community, we have yet to agree on the consensus sharing method. 
 We provide several examples for generating unique identifiers:
@@ -800,10 +812,10 @@ We provide several examples for generating unique identifiers:
 \begin{enumerate}
     \item \textbf{Hash functions:} SHA-256 to generate a unique hash of the set's characteristics, ensuring a unique and reliable identifier.
     \item \textbf{UUIDs:} Employ randomly generated UUIDs which provide high uniqueness across systems.
-    \item \textbf{Semantic combination:} Create identifiers by combining relevant semantic elements like project ID and data release version in a structured format.
+   \item \textbf{Semantic combination:} Create identifiers by combining relevant semantic elements - such as project ID, data provider ID, and data release version - in a structured format. Including the data provider ID is essential to ensure uniqueness across different sources.
     \item \textbf{IRI incorporation:} Develop internationalised resource identifiers (IRI) that provide traceability and integrate neatly into linked data frameworks.
     \item \textbf{Registry-based allocation:} Use a centralised registry to manage identifier assignment and ensure consistency.
-    \item \textbf{Integrating standards:} Use standards such as SNOMED CT with local identifiers to form comprehensive, domain-specific identifiers.
+    \item \textbf{Linking standards:} Map local identifiers to established international standards (e.g., SNOMED CT) by establishing equivalence classes, thereby enhancing interoperability and semantic integration across systems.
 \end{enumerate}
 
 We demonstrate an example analysis plan (or result database entry) in \textbf{box \ref{box:example_concept}}. 
@@ -851,7 +863,7 @@ We prepared this annotation interpretation dataset in R with GuRu, our variant i
 \begin{figure}[!h]
     \centering
    \includegraphics[width=0.85\textwidth]{./images/Guru_singlecase_distribution_variables.pdf}
-       \caption{Example of the annotated dataset describing variant calls from the disease cohort on chromosome 1. The subset shown highlights key variables used in quality control and variant interpretation, resulting in 596 variants with 377 annotation fields per variant for 940 subjects. Axis which contain many term labels are down sampled to list every tenth  label (n=10 samp).}
+       \caption{Example of the annotated dataset describing variant calls from the disease cohort on chromosome 1. The subset shown highlights key variables used in quality control and variant interpretation, resulting in 596 variants with 377 annotation fields per variant for 940 subjects. Axis which contain many term labels are down sampled to list every tenth  label (n=10 samp). Genotype 1 is heteterzygous, 2 is homozygous; gnomAD AF is allele frequency in the gnomAD population database, inheritance patterns \ac{ad} Autosomal Dominant, \ac{ar} Autusomal Recessive.}
     \label{fig:guru_case_study_setup}
 \end{figure}
 
@@ -949,6 +961,25 @@ Subsequently, we briefly demonstrate why such \ac{qv} criteria are necessary. In
 
 \section{Conclusions}
 We emphasise the critical importance of \ac{qv} standardisation in genomic research. By proposing a clear framework for incorporating \ac{qv} protocols into analysis pipelines, we highlight how systematic handling of these variables enhances reproducibility, accuracy, and efficiency in genetic studies. As genomic technologies and data complexities expand, the need for robust, scalable, and adaptable \ac{qv} protocols becomes ever more pressing. Future work should extend these frameworks to accommodate emerging technologies and analytical challenges, further improving the fidelity and utility of genomic data interpretation across diverse applications.
+
+\section{Funding}
+This project was supported through the grant NDS-2021-911 (SwissPedHealth) from the Swiss Personalized Health Network and the Strategic Focal Area 'Personalized Health and Related Technologies' of the ETH Domain (Swiss Federal Institutes of Technology).
+
+\section{Acknowledgements}
+
+Acknowledgements We would like to thank all the patients and families who have been providing advice on SwissPedHealth and its projects, as well as the clinical and research teams at the participating institutions.
+
+\section{Contributions}
+DL designed the work and contributed to the manuscript.
+AS, SB, SÖ  contributed to the manuscript.
+JF, JV, LJS designed the work and applied for funding.
+
+\section{Competing interests}
+None declared.
+
+\section{Collaborators}
+The SwissPedHealth consortium may be named here for publication and is prepared as a comment in the LaTeX document.
+% SwissPedHealth consortium: Andrea Agostini (Department of Computer Science, Institute for Machine Learning, ETH Zurich, Zurich, Switzerland), Anita Rauch (Institute of Medical Genetics, University of Zurich, Zurich, Switzerland), Anna Hartung (Inselspital, Bern University Hospital, University of Bern, Switzerland), Audrey van Drogen (PHRT Swiss Multi-Omics Centre [SMOC], ETH Zurich, Zurich, Switzerland \& Institute of Translational Medicine [ITM], Department of Health Sciences and Technology [D-HEST], ETH Zurich, Zurich, Switzerland), Aurélie Martin Necker (Patient and Family Advisory Committee, SwissPedHealth), Ben D Spycher (Institute of Social and Preventive Medicine [ISPM], University of Bern, Bern, Switzerland), Christian Kahlert (Ostschweizer Kinderspital, St Gallen, Switzerland), Christopher B Forrest (Center for Applied Clinical Research, Children’s Hospital of Philadelphia, Philadelphia, USA), Claudia E Kuehni (Institute of Social and Preventive Medicine [ISPM], University of Bern, Bern, Switzerland \& Division of Paediatric Respiratory Medicine and Allergology, Children's University Hospital, Inselspital, University of Bern, Bern, Switzerland), Cornelia Hagman (Department of Intensive Care and Neonatology and Children’s Research Centre, University Children’s Hospital Zurich, University of Zurich, Zurich, Switzerland), D Sean Froese (Division of Metabolism and Children’s Research Centre, University Children’s Hospital Zurich, University of Zurich, Zurich, Switzerland), Daphné Chopard (Department of Computer Science, Institute for Machine Learning, ETH Zurich, Zurich, Switzerland \& Department of Intensive Care and Neonatology and Children’s Research Centre, University Children’s Hospital Zurich, University of Zurich, Zurich, Switzerland), Dylan Lawless (School of Life Sciences, Ecole Polytechnique Fédérale de Lausanne, Lausanne, Switzerland \& Department of Intensive Care and Neonatology and Children’s Research Centre, University Children’s Hospital Zurich, University of Zurich, Zurich, Switzerland), Effy Vayena (Department of Health Sciences and Technology, Institute of Translational Medicine, ETH Zurich, Zurich, Switzerland), Eirini I Petrou (Department of Health Sciences and Technology, Institute of Translational Medicine, ETH Zurich, Zurich, Switzerland), Emanuele Palumbo (Department of Computer Science, Institute for Machine Learning, ETH Zurich, Zurich, Switzerland), Eric Giannoni (Clinic of Neonatology, Lausanne University Hospital, University of Lausanne, Lausanne, Switzerland), Fabiën N Belle (Institute of Social and Preventive Medicine [ISPM], University of Bern, Bern, Switzerland), Ioannis Xenarios (PHRT Swiss Multi-Omics Centre [SMOC], EPFL, Lausanne, Switzerland \& Department of Computational Biology, University of Lausanne, Lausanne, Switzerland \& Health 2030 Genome Center, Foundation Campus Biotech, Geneva, Switzerland), Jacques Fellay (School of Life Sciences, Ecole Polytechnique Fédérale de Lausanne, Lausanne, Switzerland \& Biomedical Data Science Center, Lausanne University Hospital, University of Lausanne, Lausanne, Switzerland), Jana Pachlopnik Schmid (Division of Immunology and Children’s Research Centre, University Children’s Hospital Zurich, University of Zurich, Zurich, Switzerland), Julia A Bielicki (Paediatric Research Center, University Children's Hospital Basel [UKBB], University of Basel, Basel, Switzerland \\& Centre for Neonatal and Paediatric Infection, St George’s, University of London, London, UK), Julia E Vogt (Department of Computer Science, Institute for Machine Learning, ETH Zurich, Zurich, Switzerland), Kathrin Hofmann (Patient and Family Advisory Committee, SwissPedHealth), Katrin Männik (PHRT Swiss Multi-Omics Centre [SMOC], EPFL, Lausanne, Switzerland \\& Center for Integrative Genomics, University of Lausanne, Lausanne, Switzerland \& Health 2030 Genome Center, Foundation Campus Biotech, Geneva, Switzerland), Keith Harshman (PHRT Swiss Multi-Omics Centre [SMOC], EPFL, Lausanne, Switzerland \& Health 2030 Genome Center, Foundation Campus Biotech, Geneva, Switzerland), Kelly Ormond (Department of Health Sciences and Technology, Institute of Translational Medicine, ETH Zurich, Zurich, Switzerland \& Department of Genetics, Stanford University School of Medicine, Stanford, California, USA), Klara Posfay-Barbe (Hôpitaux Universitaires de Genève, Geneva, Switzerland), Léa Ho Dac (Division of Paediatric Respiratory Medicine and Allergology, Department of Paediatrics, Inselspital, Bern University Hospital, University of Bern, Switzerland), Lorenz M Leuenberger (Institute of Social and Preventive Medicine [ISPM], University of Bern, Bern, Switzerland), Luregn J Schlapbach (Department of Intensive Care and Neonatology and Children’s Research Centre, University Children’s Hospital Zurich, University of Zurich, Zurich, Switzerland \& Child Health Research Centre, The University of Queensland, Brisbane, Australia), Manon Jaboyedoff (Pediatric Infectious Diseases and Vaccinology Unit, Service of Pediatrics, Department Mother-Woman-Child, Lausanne University Hospital and University of Lausanne, Lausanne, Switzerland), Mariam Ait Oumelloul (School of Life Sciences, Ecole Polytechnique Fédérale de Lausanne, Lausanne, Switzerland), Martin Stocker (Luzerner Kantonsspital, Luzern, Switzerland), Matthias R Baumgartner (Division of Metabolism and Children’s Research Centre, University Children’s Hospital Zurich, University of Zurich, Zurich, Switzerland), Nicola Zamboni (PHRT Swiss Multi-Omics Centre [SMOC], ETH Zurich, Zurich \& Institute of Molecular Systems Biology, ETH Zurich, Zurich, Switzerland), Nicole Goebel (Research and Analyses Services, Digitalisation \& ICT Division, University Hospital Basel, Basel, Switzerland), Patrick G A Pedrioli (PHRT Swiss Multi-Omics Centre [SMOC], ETH Zurich, Zurich, Switzerland \& Institute of Translational Medicine [ITM], Department of Health Sciences and Technology [D-HEST], ETH Zurich, Zurich, Switzerland \& Swiss Institute of Bioinformatics, Lausanne, Switzerland \& Department of Biology, Institute of Molecular Systems Biology, Swiss Federal Institute of Technology/ETH Zürich, Zurich, Switzerland), Philipp Latzin (Division of Paediatric Respiratory Medicine and Allergology, Department of Paediatrics, Inselspital, Bern University Hospital, University of Bern, Switzerland), Rebeca Mozun (Department of Intensive Care and Neonatology and Children’s Research Centre, University Children’s Hospital Zurich, University of Zurich, Zurich, Switzerland), Roger Lauener (Ostschweizer Kinderspital, St Gallen, Switzerland), Sandra Goetze (PHRT Swiss Multi-Omics Centre [SMOC], ETH Zurich, Zurich, Switzerland \& Institute of Translational Medicine [ITM], Department of Health Sciences and Technology [D-HEST], ETH Zurich, Zurich, Switzerland), Seraina Prader (Division of Immunology and Children’s Research Centre, University Children’s Hospital Zurich), Simon Boutry (School of Life Sciences, Ecole Polytechnique Fédérale de Lausanne, Lausanne, Switzerland), Sven Schulzke (Department of Neonatology, University Children's Hospital Basel [UKBB], University of Basel, Basel, Switzerland), Tatjana Welzel (Paediatric Research Center, University Children's Hospital Basel [UKBB], University of Basel, Basel, Switzerland), Thomas M Sutter (Department of Computer Science, Institute for Machine Learning, ETH Zurich, Zurich, Switzerland), Varvara Dimopoulou (Clinic of Neonatology, Lausanne University Hospital and University of Lausanne, Lausanne, Switzerland), Vito RT Zanotelli (Division of Metabolism and Children’s Research Centre, University Children’s Hospital Zurich, University of Zurich, Zurich, Switzerland), Xeni Deligianni (Research and Analyses Services, Digitalisation \& ICT Division, University Hospital Basel, Basel, Switzerland), Xenia Bovermann (Division of Paediatric Respiratory Medicine and Allergology, Department of Paediatrics, Inselspital, Bern University Hospital, University of Bern, Switzerland), Yara Shoman (Institute of Social and Preventive Medicine [ISPM], University of Bern, Bern, Switzerland).
 
 \clearpage
 \bibliographystyle{unsrtnat}
