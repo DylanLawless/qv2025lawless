@@ -51,6 +51,7 @@
  \acro{ad}[AD]{Autosomal Dominant}
  \acro{ar}[AR]{Autosomal Recessive}
  \acro{gwas}[GWAS]{Genome Wide Association Test}
+ \acro{indel}[INDEL]{Insertion / Deletion}
  \acro{maf}[MAF]{Minor Allele Frequency}
  \acro{prs}[PRS]{Polygenic Risk Score} 
  \acro{qc}[QC]{Quality Control}
@@ -59,12 +60,14 @@
  \acro{ax}[QV\textsubscript{ax}]{Axiomatic Variants}
  \acro{sf}[SF]{Secondary Findings}
  \acro{skat}[SKAT]{sequence kernel association test} 
+ \acro{snv}[SNV]{Single nucleotide Variant}
  \acro{sphn}[SPHN]{Swiss Personalized Health Network}
  \acro{vqsr}[VQSR]{Variant Quality Score Recalibration}
  \acro{vsat}[VSAT]{Variant Set Association Test}
+  \acro{vus}[VUS]{Variants of Unknown Significance}
  \acro{wgs}[WGS]{Whole Genome Sequencing}
 \end{acronym}
-  
+
 \clearpage
 \begin{abstract}
 Qualifying variants (QV) are specific genomic alterations chosen through defined criteria in processing pipelines, and are essential for analyses in genetic research and clinical diagnostics. This paper reframes QVs not merely as simple filtering criteria but as a dynamic, multifaceted concept crucial for varied genomic analysis scenarios. We argue that standardising and optimising QVs for advanced, multi-stage use - rather than confining them to simplistic, single-stage filters - can significantly advance omics research and open new theoretical avenues. Although typically viewed as tools to exclude benign or unrelated variants, QVs actually involve complex, distributed steps throughout the analysis pipeline. We propose a redefinition of QVs by outlining several common sets and demonstrating their roles within analysis pipelines, thereby elucidating their integration and standardisation for specific analytical contexts. By introducing new terminology and a standard reference model, we aim to enhance understanding and communication about QVs, thus improving methodological discussions across disciplines. Finally, we present a validation case study demonstrating implementation of ACMG criteria in a disease cohort of 940 subjects with exome sequence data.
@@ -81,76 +84,99 @@ Qualifying variants (QV) are specific genomic alterations chosen through defined
 \section{Introduction}
 \label{sec:intro}
 \subsection{Use and application of qualifying variants}
-\ac{qv}s are genomic alterations selected through specific criteria during genomic processing pipelines. These variants are essential for downstream analysis in genetic research and clinical diagnostics. This paper explores the application and conceptualisation of \ac{qv}s not merely as filtering criteria but as a dynamic concept crucial for various genomic analysis scenarios.
-Generally, the selection of \ac{qv}s follows well-established best practices in variant classification and reporting standards \cite{richards2015standards, li2017standards, li2017intervar, riggs2020technical, tavtigian2020fitting}, as well as standardized workflows \cite{pedersen2021effective, anderson2010data, uffelmann2021genome}.
-However, a standard guide for \ac{qv} themselves remains missing.
-\ac{prs} reporting standards have been developed to encourage their application and translation as well as open cataloguing for reproducibility and systematic evaluation
-\cite{wand2021improving, lambert2021polygenic}.
-We propose an equivalent is beneficial for \ac{qv}.
+%\ac{qv}s are genomic alterations selected through specific criteria during genomic processing pipelines. These variants are essential for downstream analysis in genetic research and clinical diagnostics. This paper explores the application and conceptualisation of \ac{qv}s not merely as filtering criteria but as a dynamic concept crucial for various genomic analysis scenarios.
+%Generally, the selection of \ac{qv}s follows well-established best practices in variant classification and reporting standards \cite{richards2015standards, li2017standards, li2017intervar, riggs2020technical, tavtigian2020fitting}, as well as standardized workflows \cite{pedersen2021effective, anderson2010data, uffelmann2021genome}.
+%However, a standard guide for \ac{qv} themselves remains missing.
+%\ac{prs} reporting standards have been developed to encourage their application and translation as well as open cataloguing for reproducibility and systematic evaluation
+%\cite{wand2021improving, lambert2021polygenic}.
+%We propose an equivalent is beneficial for \ac{qv}.
 
-The choice of \ac{qv} thresholds often depends on the specific context of the research or clinical needs. 
-For instance, \ac{gwas} might prioritise common variants, 
-\ac{vsat} might prioritise rare variant collapse, 
-and clinical genetic reports may focus on rare or novel variants. 
-Therefore, \ac{qv}s are categorised by the extent and nature of the filtering or quality control they undergo, tailored to the research or clinical requirements. 
-\textbf{Figure \ref{fig:qv_pipeline_with_file_vcurrent}} 
-demonstrates a typical WGS and \ac{vsat} analysis pipeline, showing \ac{qv}s as sequential and potentially piped protocol steps.
+
+Qualifying variants (\ac{qv}s) are genomic alterations selected by specific criteria within processing pipelines, and they are essential for downstream analyses in genetic research and clinical diagnostics. This paper explores the application and conceptualisation of \ac{qv}s not merely as simple filters, but as dynamic elements that are integral throughout genomic analysis pipelines. Typically, the selection of \ac{qv}s follows established best practices in variant classification and reporting standards \cite{richards2015standards, li2017standards, li2017intervar, riggs2020technical, tavtigian2020fitting}, as well as standardised workflows \cite{pedersen2021effective, anderson2010data, uffelmann2021genome}. Nonetheless, a standard guide for the \ac{qv} concept is currently lacking. Analogous to the development of \ac{prs} reporting standards, which promote reproducibility and systematic evaluation \cite{wand2021improving, lambert2021polygenic}, a similar approach for \ac{qv}s is both necessary and beneficial.
+
+%The choice of \ac{qv} thresholds often depends on the specific context of the research or clinical needs. 
+%For instance, \ac{gwas} might prioritise common variants, 
+%\ac{vsat} might prioritise rare variant collapse, 
+%and clinical genetic reports may focus on rare or novel variants. 
+%Therefore, \ac{qv}s are categorised by the extent and nature of the filtering or quality control they undergo, tailored to the research or clinical requirements. 
+%\textbf{Figure \ref{fig:qv_pipeline_with_file_vcurrent}} 
+%demonstrates a typical WGS and \ac{vsat} analysis pipeline, showing \ac{qv}s as sequential and potentially piped protocol steps.
+
+The thresholds for \ac{qv} selection are tailored to the specific requirements of each study. For example, \ac{gwas} may prioritise common variants, \ac{vsat} may require rare variant collapse, while clinical genetic reports often focus on rare or novel variants. Thus, \ac{qv}s are typically classified by the nature and extent of filtering or quality control they undergo. \textbf{Figure \ref{fig:qv_pipeline_with_file_vcurrent}} illustrates a typical \ac{wgs} and \ac{vsat} analysis pipeline for \ac{snv}-\ac{indel}, where \ac{qv} steps are arranged sequentially and may be piped together within the protocol.
 
 \begin{figure}[!h]
     \centering
    \includegraphics[width=0.99\textwidth]{./images/qv_pipeline_with_file_vcurrent.pdf}
-    \caption{Summary of the example application design DNA SNV INDEL v1 pipeline. \ac{qv}1 and \ac{qv}2 are shown as sequential and potentially piped protocol steps.
-    QV files used in a pipeline. The description file contains brief summary of how or why a step is used in the QV set (not mandatory). The variables file contains the necessary values of a QV setting (mandatory). These variables are loaded by the analysis pipeline. This illustration highlights a single stage in the QV1 set (i.e. step 10 in our example WGS analysis pipeline where the GATK VQSR method is applied). The full pipeline illustrated in the top panel simplifies this process under the QV1 icon.
-    }
+    \caption{Summary of the example application design for the DNA SNV INDEL v1 pipeline. \ac{qv}1 and \ac{qv}2 are shown as sequential and potentially piped protocol steps. The description file (non-mandatory) and the variables file (mandatory) form part of the QV files that are loaded by the analysis pipeline. This illustration highlights a single stage in the QV1 set (i.e. step 10 where the GATK VQSR method is applied), with the full pipeline simplified under the QV1 icon.}
     \label{fig:qv_pipeline_with_file_vcurrent}
 \end{figure}
 
-The common approach to representing \ac{qv} steps are illustrated in 
-\textbf{figure \ref{fig:qv_filter_pyramid_vcurrent}}.
-This style simplifies the variant filtering process where each layer may arise from different stages of a pipeline.
-The raw omic data can be processed into a multi-use analysis-ready format, as illustrated in 
-\textbf{figure 
-\ref{fig:candidate_variants_sequence_annotation}}.
-Initial \ac{qv} steps can include \ac{qc} filtering. 
-After variant annotation, further \ac{qv} steps can be applied on this new information as shown in 
-\textbf{figure
-\ref{fig:candidate_variants_sequence_annotation}}.
+%The common approach to representing \ac{qv} steps are illustrated in 
+%\textbf{figure \ref{fig:qv_filter_pyramid_vcurrent}}.
+%"I would add brief sentences to go thrgouh to main steps of QV, I feel like its important for the reader to know in the text what is the main key message or what are the key steps to remember from the figure"
+%This style simplifies the variant filtering process where each layer may arise from different stages of a pipeline.
+%The raw omic data can be processed into a multi-use analysis-ready format, as illustrated in 
+%\textbf{figure 
+%\ref{fig:candidate_variants_sequence_annotation}}.
+%"The transition is not clear for me and also the key message to get from this figure 3 and link with figure 2".
+%Initial \ac{qv} steps can include \ac{qc} filtering. 
+%After variant annotation, further \ac{qv} steps can be applied on this new information as shown in 
+%\textbf{figure
+%\ref{fig:candidate_variants_sequence_annotation}}.
+
+The typical representation of \ac{qv} steps is shown in \textbf{figure \ref{fig:qv_filter_pyramid_vcurrent}}.
+This figure summarises the common steps in the variant filtering process such as \ac{qc} filtering of raw omic data,
+removing background noise such as high frequency variants compared to a reference population, and filtering on variant effect metrics like pathogenicity scores.
+The transition from raw data to annotated variants, as illustrated in \textbf{figure \ref{fig:candidate_variants_sequence_annotation}}, underscores how initial \ac{qv} steps (e.g. \ac{qc}) are complemented by additional filtering based on new annotation data.
  
 \begin{SCfigure}[][h]
 %\begin{figure}[h]
 \centering
      \includegraphics[width=0.66\textwidth]{./images/qv_filter_pyramid_vcurrent.pdf}
-\caption{Illustration of the qualifying variant workflow. This figure summarises the conceptualised variant filtering step. This style is relatively common. In reality, we observe that each layer of the filters comes from disparate stages of a pipeline.}
+\caption{Illustration of the qualifying variant workflow. Each layer of filtering can arise from different stages of the pipeline. In reality, we observe that each layer of the filters comes from disparate stages of a pipeline.}
     \label{fig:qv_filter_pyramid_vcurrent}
 % \end{figure}
 \end{SCfigure}
 
-\citet{povysil2019rare} previously provided a tangible example of \ac{qv} for variant collapsing analyses for complex traits. 
-\citet{cirulli2015exome} reported one of the first variant collapse analysis and introduced the \ac{qv} concept.
-However, we have no a standardised framework for presenting \ac{qv} themselves. 
-We detail four typical applications of \ac{qv} sets:
+%\citet{povysil2019rare} previously provided a tangible example of \ac{qv} for variant collapsing analyses for complex traits. 
+%\citet{cirulli2015exome} reported one of the first variant collapse analysis and introduced the \ac{qv} concept.
+%However, we have no a standardised framework for presenting \ac{qv} themselves. 
+%We detail four typical applications of \ac{qv} sets:
+%
+%\begin{enumerate}
+%    \item \textbf{\ac{qv} passing \ac{qc} only}: Generates large datasets, e.g. 500,000 variants per subject, used in \ac{gwas} or \ac{wgs} pre-processing.
+%    \item \textbf{Flexible \ac{qv}}: Balances between \ac{qc} and false positives. For instance, fewer than 100,000 variants per subject in preparation for rare variant association testing.
+%        \item \textbf{\ac{qv}  for rare disease}: Produces smaller datasets after stringent filtering, e.g. 1,000 variants per subject, such as pre-processing to target known genes or a single causal variant in single-case genetic reports.
+%   \item \textbf{Known disease panel \ac{qv} set}: A well known gene panel with pathogenic variants, e.g. the \ac{acmg} \ac{sf} set, recommended for clinical reporting \cite{miller2023acmg}. 
+%\end{enumerate}
 
+Previous work has demonstrated tangible applications of \ac{qv}s. For instance, \citet{povysil2019rare} provided an example of \ac{qv}s in variant collapsing analyses for complex traits, while \citet{cirulli2015exome} introduced the concept in early studies. Despite these contributions, a standardised framework for presenting \ac{qv}s is absent. Here, we detail four typical applications of \ac{qv} sets:
 \begin{enumerate}
-    \item \textbf{\ac{qv} passing \ac{qc} only}: Generates large datasets, e.g. 500,000 variants per subject, used in \ac{gwas} or \ac{wgs} pre-processing.
-    \item \textbf{Flexible \ac{qv}}: Balances between \ac{qc} and false positives. For instance, fewer than 100,000 variants per subject in preparation for rare variant association testing.
-        \item \textbf{\ac{qv}  for rare disease}: Produces smaller datasets after stringent filtering, e.g. 1,000 variants per subject, such as pre-processing to target known genes or a single causal variant in single-case genetic reports.
-   \item \textbf{Known disease panel \ac{qv} set}: A well known gene panel with pathogenic variants, e.g. the \ac{acmg} \ac{sf} set, recommended for clinical reporting \cite{miller2023acmg}. 
-   
+    \item \textbf{\ac{qv} passing \ac{qc} only}: Generates large datasets (e.g. 500,000 variants per subject) for \ac{gwas} or initial \ac{wgs} pre-processing.
+    \item \textbf{Flexible \ac{qv}}: Balances between \ac{qc} and false positives, yielding intermediate datasets (e.g. fewer than 100,000 variants per subject) for rare variant association testing.
+    \item \textbf{\ac{qv} for rare disease}: Applies stringent filtering to produce smaller datasets (e.g. around 1,000 variants per subject), targeting known genes or single causal variants.
+    \item \textbf{Known disease panel \ac{qv} set}: Utilises well-established gene panels with pathogenic variants (e.g. the \ac{acmg} \ac{sf} set) for clinical reporting \cite{miller2023acmg}.
 \end{enumerate}
 
-Two exemplary applications of \ac{qv}s are in clinical genetics reporting and \ac{gwas}. 
-In clinical genetics single-case analysis, \ac{qv}s may be selected from a list of disease-causing genes identified by an expert panel. 
-Variants within these genes can be categorised based on their potential pathogenicity into variants of unknown significance (VUS), or as known, candidate, or causal variants pending further analysis. 
-In \ac{gwas}, \ac{qv}s generally refer to consensus variants that have undergone standard \ac{qc} procedures to ensure their statistical suitability for the main analysis.
-The rigorous selection and categorisation of \ac{qv}s in genetic research and diagnostics are crucial for accurately reporting and reproducing such studies, underscoring the importance of \ac{qv} criteria, which can sometimes be more critical than the choice of analysis pipeline itself 
-\cite{olson2023variant}.
+%Two exemplary applications of \ac{qv}s are in clinical genetics reporting and \ac{gwas}. 
+%In clinical genetics single-case analysis, \ac{qv}s may be selected from a list of disease-causing genes identified by an expert panel. 
+%Variants within these genes can be categorised based on their potential pathogenicity into variants of unknown significance (VUS), or as known, candidate, or causal variants pending further analysis. 
+%In \ac{gwas}, \ac{qv}s generally refer to consensus variants that have undergone standard \ac{qc} procedures to ensure their statistical suitability for the main analysis.
+%The rigorous selection and categorisation of \ac{qv}s in genetic research and diagnostics are crucial for accurately reporting and reproducing such studies, underscoring the importance of \ac{qv} criteria, which can sometimes be more critical than the choice of analysis pipeline itself 
+%\cite{olson2023variant}.
+
+Two exemplary applications of \ac{qv}s are found in clinical genetics reporting and \ac{gwas}. In clinical genetics, single-case analyses may select \ac{qv}s from disease-causing gene lists provided by expert panels, with variants being categorised as \ac{vus}, known, candidate, or causal. In \ac{gwas}, \ac{qv}s typically represent consensus variants that have passed rigorous \ac{qc} procedures, ensuring their suitability for statistical analyses. The careful selection and categorisation of \ac{qv}s are thus critical for accurate reporting and reproducibility, sometimes even more so than the choice of the analysis pipeline itself \cite{olson2023variant}.
+
+
 
 \begin{figure}[h!]
     \centering
    \includegraphics[width=0.8\textwidth]{./images/candidate_variants_sequence_to_matrix_pink.pdf}
       \includegraphics[width=0.8\textwidth]{./images/candidate_variants_sequence_annotation_pink.pdf}
-    \caption{Top: From raw omics to data matrix.  We focus on DNA variants in \ac{qv} but the same concept applies to other datasets.
-    Bottom: The initial variant detection pipeline generlly requires \ac{qc} and filtering rules that are the first \ac{qv} steps. Once complete, annotation of variants can follow. Further \ac{qv} steps can be run based on these new annotations.}
+    \caption{
+Top: Transformation from raw omic data to a data matrix. Bottom: Initial variant detection requires \ac{qc} and filtering rules, which are the first \ac{qv} steps. Subsequent annotation of variants enables further \ac{qv} filtering based on new information.    
+% Top: From raw omics to data matrix.  We focus on DNA variants in \ac{qv} but the same concept applies to other datasets. Bottom: The initial variant detection pipeline generlly requires \ac{qc} and filtering rules that are the first \ac{qv} steps. Once complete, annotation of variants can follow. Further \ac{qv} steps can be run based on these new annotations.
+    }
 %    \label{fig:candidate_variants_sequence_to_matrix}
         \label{fig:candidate_variants_sequence_annotation}
 \end{figure}
@@ -158,158 +184,211 @@ The rigorous selection and categorisation of \ac{qv}s in genetic research and di
 \subsection{Background problem and proposed solution}
 %Historical context of \ac{qv}s and their evolution. Challenges faced in the qualification of variants and the necessity for standardisation.
 
-As study sizes surpass the 1,000,000 subjects milestone \cite{lee2018gene, jansen2019genome}, the shift towards \ac{wgs} over genotyping has become standard. 
-This transition enables the inclusion of rare variants in \ac{gwas} and \ac{vsat}, allowing for more comprehensive analyses of complex traits \cite{manolio2009finding, young2019solving}. % These paper describes the concept of ‘missing heritability’, the observation that heritability estimates from \ac{gwas} are much lower than those from twin studies.
-\ac{qv} protocols are essential in data cleaning and preparation, serving as a critical step in ensuring the integrity of data analysis. 
-While often grouped under the single term ``\ac{qv}'' for simplicity, the processes involved actually span various stages of a pipeline and originate from diverse steps or sources.
-\textbf{Figure 
-\ref{fig:qv_structure_vcurrent}}
-shows the structural framework of a variant's features that may trigger specific \ac{qv} protocols, highlighting both pre-existing metadata and annotations added post-variant calling.
+%As study sizes surpass the 1,000,000 subjects milestone \cite{lee2018gene, jansen2019genome}, the shift towards \ac{wgs} over genotyping has become standard. 
+%This transition enables the inclusion of rare variants in \ac{gwas} and \ac{vsat}, allowing for more comprehensive analyses of complex traits \cite{manolio2009finding, young2019solving}. % These paper describes the concept of ‘missing heritability’, the observation that heritability estimates from \ac{gwas} are much lower than those from twin studies.
+%\ac{qv} protocols are essential in data cleaning and preparation, serving as a critical step in ensuring the integrity of data analysis. 
+%While often grouped under the single term ``\ac{qv}'' for simplicity, the processes involved actually span various stages of a pipeline and originate from diverse steps or sources.
+%\textbf{Figure 
+%\ref{fig:qv_structure_vcurrent}}
+%shows the structural framework of a variant's features that may trigger specific \ac{qv} protocols, highlighting both pre-existing metadata and annotations added post-variant calling.
+
+As study sizes now exceed one million subjects \cite{lee2018gene, jansen2019genome}, the shift from genotyping to \ac{wgs} is now standard, allowing rare variants to be included in \ac{gwas} and \ac{vsat} for more comprehensive analyses of complex traits \cite{manolio2009finding, young2019solving}. % These paper describes the concept of ‘missing heritability’, the observation that heritability estimates from \ac{gwas} are much lower than those from twin studies.
+\ac{qv} protocols play a crucial role in data cleaning and preparation, ensuring the integrity of subsequent analyses. Although the term ``\ac{qv}'' is often used as a catch-all descriptor for various filtering steps, in practice it encompasses multiple stages that originate from diverse parts of the pipeline.
+\textbf{Figure \ref{fig:qv_structure_vcurrent}} illustrates the structural framework of an annotated variant, highlighting the features, both pre-existing metadata and post-calling annotations, that can trigger specific \ac{qv} protocols. This figure emphasises that each variant is subject to multiple criteria, which may derive from distinct processing steps.
 
 \begin{figure}[h!]
 \centering
      \includegraphics[width=0.99\textwidth]{./images/qv_structure_vcurrent.pdf}
-\caption{This illustration shows the structural framework of an annotated variant in relation to the features used for qualification. For every individual variant, a number features are capable of triggering \ac{qv} protocols. The diagram highlights a select group of these features, showcasing both pre-existing metadata established before data generation and annotations applied after variant calling.}
+\caption{
+%This illustration shows the structural framework of an annotated variant in relation to the features used for qualification. For every individual variant, a number features are capable of triggering \ac{qv} protocols. The diagram highlights a select group of these features, showcasing both pre-existing metadata established before data generation and annotations applied after variant calling.
+Structural framework of an annotated variant. The diagram highlights selected features, both pre-existing metadata and annotations added after variant calling, that can trigger specific \ac{qv} protocols.
+}
 \label{fig:qv_structure_vcurrent}
 \end{figure}
 
-Moreover, complex analyses often necessitate multiple processing streams that merge into a cohesive analysis. 
-This multifaceted approach to \ac{qv} becomes apparent in multi-component analyses, which require the integration of two or more data sets. 
-A standardised \ac{qv} format will allow for the use of various \ac{qv} sets, each based on potentially different filters and variables, yet provides a common foundation to ensure consistency and validity across disparate data streams
+%Moreover, complex analyses often necessitate multiple processing streams that merge into a cohesive analysis. 
+%This multifaceted approach to \ac{qv} becomes apparent in multi-component analyses, which require the integration of two or more data sets. 
+%A standardised \ac{qv} format will allow for the use of various \ac{qv} sets, each based on potentially different filters and variables, yet provides a common foundation to ensure consistency and validity across disparate data streams
+
+Moreover, complex analyses often require multiple processing streams that are ultimately merged into a cohesive result. A standardised \ac{qv} format would allow for the use of various \ac{qv} sets, each based on different filters and variables, while providing a common foundation for consistency across disparate data streams. The ambiguity in the term \ac{qv} across genomic studies underscores the need for a clear and flexible definition that captures both its common uses and its implementation across multiple stages.
+
 
 %\subsection{Challenges in Data Integration}
-Unsurprisingly, the term \ac{qv} is often ambiguously used across different contexts within genomic studies, necessitating a clear definition for each application. 
-Moreover, while \ac{qv}s are typically perceived as a set of filters and algorithms to remove benign or unrelated variants, they actually encompass many complex steps distributed throughout the entire analysis pipeline, and not necessarily confined to a single step. 
-This dispersion of \ac{qv} steps challenges the conventional view and highlights the need for a flexible definition that not only encompasses their common uses but also acknowledges their implementation across multiple stages of genomic analysis.
+%Unsurprisingly, the term \ac{qv} is often ambiguously used across different contexts within genomic studies, necessitating a clear definition for each application. 
+%Moreover, while \ac{qv}s are typically perceived as a set of filters and algorithms to remove benign or unrelated variants, they actually encompass many complex steps distributed throughout the entire analysis pipeline, and not necessarily confined to a single step. 
+%This dispersion of \ac{qv} steps challenges the conventional view and highlights the need for a flexible definition that not only encompasses their common uses but also acknowledges their implementation across multiple stages of genomic analysis.
 
-The complex, multi-step nature of \ac{qv}s often goes unrecognised by those outside the field of bioinformatics.
-This makes it challenging to share knowledge across disciplines for more advanced tasks and underscoring the importance of a clear and comprehensive understanding of \ac{qv} protocols.
+%The complex, multi-step nature of \ac{qv}s often goes unrecognised by those outside the field of bioinformatics.
+% This makes it challenging to share knowledge across disciplines for more advanced tasks and underscoring the importance of a clear and comprehensive understanding of \ac{qv} protocols.
 
-By introducing a new vocabulary and a standard reference model for \ac{qv}s, we aim to clarify the concept and improve the communication and methodological discussions around \ac{qv}s. 
-We therefore define and exemplify several common sets of \ac{qv}s, illustrating their potential configurations and roles within analysis pipelines:
-
+By introducing a new vocabulary and a standard reference model for \ac{qv}s, we aim to clarify the concept and improve communication and methodological discussion across disciplines for more advanced tasks.
+We define and exemplify several common \ac{qv} sets, illustrating their potential configurations and roles within analysis pipelines:
 \begin{enumerate}
-    \item We demonstrate the theoretical pipelining of \ac{qv} sets.
-    \item We outline how standardised \ac{qv} sets can be established for specific analytical scenarios.
-    \item We highlight that \ac{qv}s are integral throughout the analysis pipeline, not merely as an end-stage addition but as essential components distributed across the process.
+    \item Theoretical pipelining of \ac{qv} sets.
+    \item Establishment of standardised \ac{qv} sets for specific analytical scenarios.
+    \item Recognition that \ac{qv}s are integral throughout the analysis pipeline rather than confined to a single end-stage.
 \end{enumerate}
 
-Accordingly, the QV framework should furnish structured definitions that are both human and machine-readable to standardise the selection and interpretation of variants across diverse genomic studies. 
-The methodology promotes efficient and precise variant detection and interpretation, which are essential for advancing both research and clinical diagnostics. 
-Adhering to these structured analysis criteria aligns with the FAIR principles of findability, accessibility, interoperability, and reusability \cite{wilkinson2016fair}.
+The proposed QV framework provides structured, human- and machine-readable definitions to standardise the selection and interpretation of variants across diverse genomic studies. This methodology promotes efficient and precise variant detection and interpretation, essential for both research and clinical diagnostics. Moreover, the structured criteria adhere to the FAIR principles of findability, accessibility, interoperability, and reusability \cite{wilkinson2016fair}.
+
+%\section{Results}
+%\subsection{Advanced applications and case study}
+%\subsubsection{How and why QV are used}
+%Here we provide an in-depth look at specific scenarios where \ac{qv}s  have inadvertently been crucial, such as in \ac{gwas}, \ac{wgs}, and clinical genetics. 
+%We note that application of \ac{qv}s would be appropriate in large-scale studies and rare disease research, such as sophisticated risk models that integrate clinical and genomic data, which enhance predictive accuracy in large, well-defined cohorts \cite{riveros2021integrated, weale2021validation, sun2021polygenic}.
+%% Thinking about complex models for clinical risk, such as PRS:
+%% \cite{riveros2021integrated} % This paper proposes a method to integrate clinical risk scores and PRSs for coronary artery disease and shows the improved predictive accuracy of PRSs over established clinical risk factors in European-ancestry individuals from the UK Biobank.
+%% \cite{weale2021validation} % This paper applies the integrated model proposed by Riveros-Mckay et al. (2021) to diverse populations in the UK Biobank and provides the first cross-ancestry validation of the clinical utility of adding polygenic scores into clinical risk tools.
+%% \cite{sun2021polygenic} % This paper recalibrated risk prediction models in the UK Biobank to what would be expected in an unbiased UK population to account for the bias caused by UK Biobank participants being healthier and wealthier, which is seldom considered in other studies in this field.
+%Likewise, \ac{qv} protocols can aid reproducibility across studies, especially in isolated or specific populations. This includes the analysis of complex signals within well-defined cohorts which can significantly aid rare disease studies \cite{lim2014distribution}. % This paper gives a good illustration of the value of isolated populations for identifying founder variants of large effect that are rare in other populations. We might consider a rare disease cohort in a similar way. 
+%
+%\subsubsection{Example application of qualifying variants in WGS analysis}
+%
+%Several \ac{qv} protocols can be piped together to create increasingly filtered datasets to match the needs at a certain stage of analysis. It is also typical that different analyses from \ac{qv}s sets are used and the final results from each step are merged to cover multiple scenarios. For example, a complex analysis pipeline might use all of
+%\colorbox{kispiblue!30}{\texttt{QV SNV/INDEL}} + 
+%\colorbox{kispiblue!30}{\texttt{QV CNV}} + 
+%\colorbox{kispiblue!30}{\texttt{QV structural variation}} + 
+%\colorbox{kispiblue!30}{\texttt{QV rare disease known}} + 
+%\colorbox{kispiblue!30}{\texttt{QV statistical association \ac{qc}}}, merged for a thorough multi-part analysis to reach the final combination of (1) a joint cohort disease association and (2) several single case analysis results.
+%We propose an example focusing on a SNV/INDEL pipeline using two \ac{qv} sets named 
+%\colorbox{colorSUNSET2!60}{\texttt{QV SNV INDEL v1}} and
+%\colorbox{colorSUNSET2!60}{\texttt{QV SNV INDEL v2}}.
+%The \ac{qv} sets are illustrated in 
+%\textbf{box \ref{box:pipe}}
+%and would be described in an analysis pipeline as follows:
+%
+%%\begin{quotation}
+%``A cohort of patient WGS data was analysed to identify genetic determinants for the clinical diagnosis of phenotype X. 
+%This pipeline was concerned with WGS germline short variant discovery (SNVs + Indels) and interpretation.
+%\underline{First, a flexible \ac{qv} set (v1)} was used for cohort-level statistical genomics and \underline{second a rare disease \ac{qv} set (v2)} was used for single-case analysis.
+%(\textbf{1}) Data was processed with the 
+%\colorbox{colorSUNSET1!30}{\texttt{pipeline DNA SNV INDEL v1}} pipeline, which implements
+%(\textbf{a}) \colorbox{colorSUNSET2!60}{\texttt{QV SNV INDEL v1}} criteria, resulting in the prepared dataset
+%\colorbox{colorSUNSET3!30}{\texttt{dataset DNA SNV INDEL v1}}.
+%(\textbf{b}) The dataset was subsequently analysed in combination with other modules including 
+%\colorbox{colorSUNSET4!30}{\texttt{PCA SNV INDEL v1}} and 
+%\colorbox{colorSUNSET5!30}{\texttt{statistical genomics v1}} to complete statistical analysis on a joint cohort.
+%(\textbf{2}) Next, 
+% the prepared dataset (from step 1a)
+%\colorbox{colorSUNSET3!30}{\texttt{Dataset DNA SNV INDEL v1}} was processed further with more strict filtering using
+%\colorbox{colorSUNSET2!60}{\texttt{QV SNV INDEL v2}} to identify previously known causal genetic variants for each patient based on disease-gene panel and curated evidence sources, resulting in \colorbox{colorSUNSET3!30}{\texttt{Dataset DNA SNV INDEL v2}} and final interpretation in
+%\colorbox{colorSUNSET5!30}{\texttt{single case report SNV INDEL v1}}.''
+%%\end{quotation}
+%
+%\begin{tcolorbox}[
+%    % breakable,  % Allows the box to split over pages
+%    colback=white!0,  % No background color (fully transparent)
+%    colframe=black,  % Black border color
+%    boxrule=1pt,  % Width of the border
+%    arc=1mm,  % Radius of the corner rounding
+%    outer arc=1mm,
+%%    title=\textbf{Example diagrammatic representation}
+%   title=\textbf{\refstepcounter{myboxcounter}\label{box:pipe}Box \themyboxcounter: Example diagrammatic representation}
+%]
+%
+%\dirtree{%
+%.1 \colorbox{colorSUNSET1!30}{\texttt{pipeline DNA SNV INDEL v1}}.
+%.2 Flexible \ac{qv} criteria.
+%.3 \colorbox{colorSUNSET2!60}{\texttt{QV SNV INDEL v1}} (-> \colorbox{colorSUNSET3!30}{\texttt{dataset DNA SNV INDEL v1}}).
+%.4 \colorbox{colorSUNSET4!30}{\texttt{PCA SNV INDEL v1}}.
+%.4 \colorbox{colorSUNSET5!30}{\texttt{statistical genomics v1}} -> Result 1.
+%.3 \colorbox{colorSUNSET3!30}{\texttt{dataset DNA SNV INDEL v1}}.
+%.4 Rare disease \ac{qv} criteria.
+%.5 \colorbox{colorSUNSET2!60}{\texttt{QV SNV INDEL v2}} (-> \colorbox{colorSUNSET3!30}{\texttt{dataset DNA SNV INDEL v2}}).
+%.6 \colorbox{colorSUNSET5!30}{\texttt{single case report SNV INDEL v1}} -> Result 2.
+%.3 Joint analysis output.
+%}
+%
+%Joint analysis output from:\\
+%Result 1 = Cohort-level association signal (e.g. variant P-value). \\
+%Result 2 = Single variant for single patient.
+%\end{tcolorbox}
+
 
 \section{Results}
-\subsection{Advanced applications and case study}
-\subsubsection{How and why QV are used}
-Here we provide an in-depth look at specific scenarios where \ac{qv}s  have inadvertently been crucial, such as in \ac{gwas}, \ac{wgs}, and clinical genetics. 
-We note that application of \ac{qv}s would be appropriate in large-scale studies and rare disease research, such as sophisticated risk models that integrate clinical and genomic data, which enhance predictive accuracy in large, well-defined cohorts \cite{riveros2021integrated, weale2021validation, sun2021polygenic}.
-% Thinking about complex models for clinical risk, such as PRS:
-% \cite{riveros2021integrated} % This paper proposes a method to integrate clinical risk scores and PRSs for coronary artery disease and shows the improved predictive accuracy of PRSs over established clinical risk factors in European-ancestry individuals from the UK Biobank.
-% \cite{weale2021validation} % This paper applies the integrated model proposed by Riveros-Mckay et al. (2021) to diverse populations in the UK Biobank and provides the first cross-ancestry validation of the clinical utility of adding polygenic scores into clinical risk tools.
-% \cite{sun2021polygenic} % This paper recalibrated risk prediction models in the UK Biobank to what would be expected in an unbiased UK population to account for the bias caused by UK Biobank participants being healthier and wealthier, which is seldom considered in other studies in this field.
-Likewise, \ac{qv} protocols can aid reproducibility across studies, especially in isolated or specific populations. This includes the analysis of complex signals within well-defined cohorts which can significantly aid rare disease studies \cite{lim2014distribution}. % This paper gives a good illustration of the value of isolated populations for identifying founder variants of large effect that are rare in other populations. We might consider a rare disease cohort in a similar way. 
+\subsection{Application of Qualifying Variants and an Example Use Case}
+%\subsection{Advanced applications and case study}
+%\subsubsection{How and why QV are used}
+We examine scenarios where \ac{qv}s have proved essential, including applications in \ac{gwas}, \ac{wgs} and clinical genetics. In large-scale studies and rare disease research, for example, sophisticated risk models that integrate clinical and genomic data can significantly enhance predictive accuracy in well-defined cohorts \cite{riveros2021integrated, weale2021validation, sun2021polygenic}. Similarly, standardised \ac{qv} protocols support reproducibility across studies, particularly when analysing complex signals in isolated populations \cite{lim2014distribution}.
 
-\subsubsection{Example application of qualifying variants in WGS analysis}
+%\subsubsection{Example application of qualifying variants in WGS analysis}
+Multiple \ac{qv} protocols can be combined to generate progressively filtered datasets tailored to specific analytical needs. Often, different \ac{qv} sets are applied sequentially, with the final outcomes merged to address distinct objectives. For instance, a comprehensive analysis pipeline might integrate:
+\begin{itemize}
+  \item \colorbox{kispiblue!30}{\texttt{QV SNV/INDEL}},
+  \item \colorbox{kispiblue!30}{\texttt{QV CNV}},
+  \item \colorbox{kispiblue!30}{\texttt{QV structural variation}},
+  \item \colorbox{kispiblue!30}{\texttt{QV rare disease known}}, and 
+  \item \colorbox{kispiblue!30}{\texttt{QV statistical association \ac{qc}}}.
+\end{itemize}
+The final analysis yields (1) a joint cohort disease association (e.g. variant P-values) and (2) individual single-case results (e.g. clinical genetics diagnosis for a patient).
 
-Several \ac{qv} protocols can be piped together to create increasingly filtered datasets to match the needs at a certain stage of analysis. It is also typical that different analyses from \ac{qv}s sets are used and the final results from each step are merged to cover multiple scenarios. For example, a complex analysis pipeline might use all of
-\colorbox{kispiblue!30}{\texttt{QV SNV/INDEL}} + 
-\colorbox{kispiblue!30}{\texttt{QV CNV}} + 
-\colorbox{kispiblue!30}{\texttt{QV structural variation}} + 
-\colorbox{kispiblue!30}{\texttt{QV rare disease known}} + 
-\colorbox{kispiblue!30}{\texttt{QV statistical association \ac{qc}}}, merged for a thorough multi-part analysis to reach the final combination of (1) a joint cohort disease association and (2) several single case analysis results.
-We propose an example focusing on a SNV/INDEL pipeline using two \ac{qv} sets named 
-\colorbox{colorSUNSET2!60}{\texttt{QV SNV INDEL v1}} and
-\colorbox{colorSUNSET2!60}{\texttt{QV SNV INDEL v2}}.
-The \ac{qv} sets are illustrated in 
-\textbf{box \ref{box:pipe}}
-and would be described in an analysis pipeline as follows:
+As an example, we focus on a SNV/INDEL pipeline employing two \ac{qv} sets:
+\colorbox{colorSUNSET2!60}{\texttt{QV SNV INDEL v1}} for flexible cohort-level filtering, and 
+\colorbox{colorSUNSET2!60}{\texttt{QV SNV INDEL v2}} for stricter filtering in subsequent single-case analysis. The pipeline is illustrated in \textbf{Box \ref{box:pipe}}, and can be summarised as follows:
 
-%\begin{quotation}
-``A cohort of patient WGS data was analysed to identify genetic determinants for the clinical diagnosis of phenotype X. 
-This pipeline was concerned with WGS germline short variant discovery (SNVs + Indels) and interpretation.
-\underline{First, a flexible \ac{qv} set (v1)} was used for cohort-level statistical genomics and \underline{second a rare disease \ac{qv} set (v2)} was used for single-case analysis.
-(\textbf{1}) Data was processed with the 
-\colorbox{colorSUNSET1!30}{\texttt{pipeline DNA SNV INDEL v1}} pipeline, which implements
-(\textbf{a}) \colorbox{colorSUNSET2!60}{\texttt{QV SNV INDEL v1}} criteria, resulting in the prepared dataset
-\colorbox{colorSUNSET3!30}{\texttt{dataset DNA SNV INDEL v1}}.
-(\textbf{b}) The dataset was subsequently analysed in combination with other modules including 
-\colorbox{colorSUNSET4!30}{\texttt{PCA SNV INDEL v1}} and 
-\colorbox{colorSUNSET5!30}{\texttt{statistical genomics v1}} to complete statistical analysis on a joint cohort.
-(\textbf{2}) Next, 
- the prepared dataset (from step 1a)
-\colorbox{colorSUNSET3!30}{\texttt{Dataset DNA SNV INDEL v1}} was processed further with more strict filtering using
-\colorbox{colorSUNSET2!60}{\texttt{QV SNV INDEL v2}} to identify previously known causal genetic variants for each patient based on disease-gene panel and curated evidence sources, resulting in \colorbox{colorSUNSET3!30}{\texttt{Dataset DNA SNV INDEL v2}} and final interpretation in
-\colorbox{colorSUNSET5!30}{\texttt{single case report SNV INDEL v1}}.''
-%\end{quotation}
+\begin{quotation}
+A cohort of patient WGS data was analysed to identify genetic determinants for phenotype X. Initially, a flexible \ac{qv} set (\texttt{QV SNV INDEL v1}) was applied using the 
+\colorbox{colorSUNSET1!30}{\texttt{pipeline DNA SNV INDEL v1}}, which implements the \texttt{QV SNV INDEL v1} criteria to produce the prepared dataset (\colorbox{colorSUNSET3!30}{\texttt{dataset DNA SNV INDEL v1}}). This dataset was then analysed alongside other modules (e.g. \colorbox{colorSUNSET4!30}{\texttt{PCA SNV INDEL v1}} and \colorbox{colorSUNSET5!30}{\texttt{statistical genomics v1}}) to derive a cohort-level association signal (Result 1). Next, the same prepared dataset was re-filtered with the stricter \texttt{QV SNV INDEL v2} criteria to identify known causal variants for each patient, yielding the final dataset (\colorbox{colorSUNSET3!30}{\texttt{dataset DNA SNV INDEL v2}}) and resulting in individual case reports (Result 2).
+\end{quotation}
 
 \begin{tcolorbox}[
-    % breakable,  % Allows the box to split over pages
-    colback=white!0,  % No background color (fully transparent)
-    colframe=black,  % Black border color
-    boxrule=1pt,  % Width of the border
-    arc=1mm,  % Radius of the corner rounding
+    colback=white!0,
+    colframe=black,
+    boxrule=1pt,
+    arc=1mm,
     outer arc=1mm,
-%    title=\textbf{Example diagrammatic representation}
-   title=\textbf{\refstepcounter{myboxcounter}\label{box:pipe}Box \themyboxcounter: Example diagrammatic representation}
+    title=\textbf{\refstepcounter{myboxcounter}\label{box:pipe}Box \themyboxcounter: Example diagrammatic representation}
 ]
-
 \dirtree{%
 .1 \colorbox{colorSUNSET1!30}{\texttt{pipeline DNA SNV INDEL v1}}.
 .2 Flexible \ac{qv} criteria.
-.3 \colorbox{colorSUNSET2!60}{\texttt{QV SNV INDEL v1}} (-> \colorbox{colorSUNSET3!30}{\texttt{dataset DNA SNV INDEL v1}}).
+.3 \colorbox{colorSUNSET2!60}{\texttt{QV SNV INDEL v1}} $\rightarrow$ \colorbox{colorSUNSET3!30}{\texttt{dataset DNA SNV INDEL v1}}.
 .4 \colorbox{colorSUNSET4!30}{\texttt{PCA SNV INDEL v1}}.
-.4 \colorbox{colorSUNSET5!30}{\texttt{statistical genomics v1}} -> Result 1.
+.4 \colorbox{colorSUNSET5!30}{\texttt{statistical genomics v1}} $\rightarrow$ Result 1.
 .3 \colorbox{colorSUNSET3!30}{\texttt{dataset DNA SNV INDEL v1}}.
 .4 Rare disease \ac{qv} criteria.
-.5 \colorbox{colorSUNSET2!60}{\texttt{QV SNV INDEL v2}} (-> \colorbox{colorSUNSET3!30}{\texttt{dataset DNA SNV INDEL v2}}).
-.6 \colorbox{colorSUNSET5!30}{\texttt{single case report SNV INDEL v1}} -> Result 2.
+.5 \colorbox{colorSUNSET2!60}{\texttt{QV SNV INDEL v2}} $\rightarrow$ \colorbox{colorSUNSET3!30}{\texttt{dataset DNA SNV INDEL v2}}.
+.6 \colorbox{colorSUNSET5!30}{\texttt{single case report SNV INDEL v1}} $\rightarrow$ Result 2.
 .3 Joint analysis output.
 }
+\medskip
 
 Joint analysis output from:\\
-Result 1 = Cohort-level association signal (e.g. variant P-value). \\
-Result 2 = Single variant for single patient.
+Result 1 = Cohort-level association signal (e.g. variant P-value).\\
+Result 2 = Single variant report per patient.
 \end{tcolorbox}
 
 
 \subsection{Methodological framework}
-\subsubsection{Three steps to a QV protocol}
-We introduce 
-a simple framework for the effective use of \ac{qv} protocols.
-We use three steps to fulfil the needs of a pipeline as illustrated in 
-\textbf{figure 
-\ref{fig:qv_pipeline_with_file_vcurrent}}:
+We introduce a simple framework for the effective use of \ac{qv}  protocols. This framework comprises three components, as illustrated in \textbf{Figure \ref{fig:qv_pipeline_with_file_vcurrent}}:
 \begin{enumerate}
-\item \textbf{Variables}: The criteria variables responsible which are sourced as part of a pipeline, as shown in \textbf{example box \ref{box:qv_variables_example}}.
-\item \textbf{Description}: The description of each step as part of an overall \ac{qv} set, as shown in \textbf{example box \ref{box:qv_description_example}}.
-\item \textbf{Source code}: The variables file can be sourced in pipeline code, as shown in \textbf{example box \ref{box:qv_bash_code_example}}.
+    \item \textbf{Variables}: The criteria variables that are sourced as part of the pipeline (see \textbf{Box \ref{box:qv_variables_example}}).
+    \item \textbf{Description}: A narrative of each step within the overall QV set (see \textbf{Box \ref{box:qv_description_example}}).
+    \item \textbf{Source code}: The implementation of the variables file within the pipeline code (see \textbf{Box \ref{box:qv_bash_code_example}}).
 \end{enumerate}
 
-The practical application of our framework efficiently manages \ac{qv}-specific variables, such as \ac{af} thresholds, distinct from general pipeline settings. These variables can be imported and handled separately within the workflow to maintain clarity and specificity.  
-We first provide a detailed example using \ac{vqsr} to show a full step in application of this method in a real-world genomic analysis scenario.
-Later, we also illustrate this approach using workflow managers like Snakemake or Nextflow, demonstrating the separation and integration of these variables to streamline genomic processing tasks.
+%The practical application of our framework efficiently manages \ac{qv}-specific variables, such as \ac{af} thresholds, distinct from general pipeline settings. These variables can be imported and handled separately within the workflow to maintain clarity and specificity.  
+%We first provide a detailed example using \ac{vqsr} to show a full step in application of this method in a real-world genomic analysis scenario.
+%Later, we also illustrate this approach using workflow managers like Snakemake or Nextflow, demonstrating the separation and integration of these variables to streamline genomic processing tasks.
 
-%Make a yed map to show the pipeline again, this time adding the explicit example of the VQSR variable settings from the variables.sh file.
-%This show graphic summary icon for other \ac{qv} steps throughout the pipeline.
-%Compare it to figure 1 where the summary of the pipeline simply illustrate \ac{qv} v1 as a single step but in this figure we see that it is actually spread throughout the pipeline by necessity. 
+This framework efficiently manages \ac{qv}-specific variables (e.g. allele frequency thresholds) separately from general pipeline settings, thereby maintaining clarity and specificity. We first present a detailed example using \ac{vqsr} from the \ac{qv} set \colorbox{colorSUNSET2!60}{\texttt{QV SNV INDEL v1}} to illustrate the practical application of this method in a real-world genomic analysis scenario. We later demonstrate how this approach integrates with workflow managers such as Snakemake or Nextflow, streamlining genomic processing tasks.
 
-Individual steps in \ac{qv} criteria can have multiple types. 
-For organisation in our protocols we suggest simple labels such as ``\ac{qc}'' and ``filter''. 
-(1) Filtering thresholds such as \ac{af} (e.g. >0.1 in cohort, <0.1 in gnomAD). These might be directly applied in place to remove all affected variants. 
-(2) Multiple steps with annotation labels such as \ac{qc} flags which do not remove variants but allow for downstream dissensions which which depend on multiple \ac{qv} criteria. 
-Thus, in a \ac{qc} protocol a single step might run and filter all variants from criteria (1 ``filter'') and another filtering step might depend on several combined criteria (2 ``\ac{qc}'') which were added upstream.
+%Individual steps in \ac{qv} criteria can have multiple types. 
+%For organisation in our protocols we suggest simple labels such as ``\ac{qc}'' and ``filter''. 
+%(1) Filtering thresholds such as \ac{af} (e.g. >0.1 in cohort, <0.1 in gnomAD). These might be directly applied in place to remove all affected variants. 
+%(2) Multiple steps with annotation labels such as \ac{qc} flags which do not remove variants but allow for downstream dissensions which which depend on multiple \ac{qv} criteria. 
+%Thus, in a \ac{qc} protocol a single step might run and filter all variants from criteria (1 ``filter'') and another filtering step might depend on several combined criteria (2 ``\ac{qc}'') which were added upstream.
 
-\subsubsection{Detailed example QV variables}\label{sec:protocol_variables_example}
-As a detailed example, we select the step \textbf{[\ac{qc}]} \colorbox{kispiblue!30}{\texttt{vqsr}} from the example \ac{qv} set
-\colorbox{colorSUNSET2!60}{\texttt{QV SNV INDEL v1}}
-to illustrate the variables sourced during the pipeline.
-The following code snippet shows the from variables sourced during VQSR. 
-First we set the mandatory \ac{qv} varaints in 
-\textbf{box \ref{box:qv_variables_example}}.
-Second, we provide the optional description in 
-\textbf{box \ref{box:qv_description_example}}.
-Third, we apply the variables in the source code 
-\textbf{box \ref{box:qv_bash_code_example}}. 
+Individual steps within \ac{qv} criteria may be categorised into different types. For organisational purposes, we recommend using simple labels such as ``\ac{qc}'' and ``filter''. For example: (1) Filtering thresholds (e.g. \ac{af} $>$ 0.1 in a cohort, $<$ 0.1 in gnomAD) may be directly applied to exclude affected variants. (2) Multiple steps involving annotation-based criteria (e.g. \ac{qc} flags) may not remove variants immediately but enable downstream analyses that depend on several \ac{qv} criteria.
+In a QC protocol, one step might filter variants based solely on threshold values (criteria 1), while another may combine several upstream QC criteria (criteria 2).
+
+\subsubsection{Detailed example of QV variables}\label{sec:protocol_variables_example}
+As a detailed example, we focus on the \colorbox{kispiblue!30}{\texttt{vqsr}} step from the \ac{qv} set \colorbox{colorSUNSET2!60}{\texttt{QV SNV INDEL v1}}. The process is illustrated in three parts.
+First, the mandatory QV variables are set (see \textbf{Box \ref{box:qv_variables_example}}).
+Second, an optional description is provided (see \textbf{Box \ref{box:qv_description_example}}).
+Third, the variables are integrated into the source code (see \textbf{Box \ref{box:qv_bash_code_example}}).
+
+
 
 \begin{tcolorbox}[
     breakable,  % Allows the box to split over pages
@@ -475,67 +554,75 @@ rule filter_variants:
 \subsection{Examples of real-world QV applications}
 
 \subsubsection{Discovery research}
-\citet{greene2023genetic} developed what can effectively be considered a prime example of QV standardisation with their ``Rareservoir,'' a relational database schema optimised for handling genetic data from rare disease studies.
-This database optimises storage and query speed by focusing on rare variants - those with a \ac{maf} below 0.1\% - thus reducing data size by about 99\%. Variants are stored as 64-bit integers (``RSVR IDs''), organised by genomic position to support efficient location-based queries. 
-Additional data include \ac{maf}s from gnomAD, CADD pathogenicity scores, and impact predictions per the Sequence Ontology. Genetic impacts are encoded into a 64-bit integer (``CSQ ID''), where each bit corresponds to a specific gene function impact, ranked by severity. 
-This structure enables precise database queries. 
-By employing the Bayesian genetic association method BeviMed, initially described by \citet{greene2017fast}, the study effectively inferred associations between genes and rare disease phenotypes, demonstrating the capacity to handle and analyze complex genetic datasets effectively.
- The protocol by \citet{greene2023genetic} can be produced in the QV format, easing the interpretation and reproducibility.
+\citet{greene2023genetic} provide an example of \ac{qv} standardisation with their ``Rareservoir'', a relational database schema optimised for rare disease studies. This database focuses on rare variants (those with a \ac{maf} below 0.1\%), reducing data size by approximately 99\% by storing variants as 64-bit integers (``RSVR IDs'') and organising them by genomic position for efficient querying. Additional data, such as \ac{maf}s from gnomAD, CADD pathogenicity scores and impact predictions per the Sequence Ontology, are encoded into a 64-bit integer (``CSQ ID''), where each bit corresponds to a specific gene function impact, ranked by severity. By employing the Bayesian genetic association method BeviMed, initially described by \citet{greene2017fast}, the study effectively inferred associations between genes and rare disease phenotypes, demonstrating the capacity to handle and analyse complex genetic datasets. The protocol of \citet{greene2023genetic} can be reproduced in the \ac{qv} format, thereby facilitating interpretation and reproducibility.
 
-We are applying the \ac{qv} framework in ``SwissPedHealth''. 
-This is a joint paediatric national data stream where one of the objectives is to investigate rare/unknown disease using a multiomic approach, including \ac{wgs}, RNAseq, proteomics, and clinical data
-\cite{mozun2024paediatric}.
-We optimise the processing pipelines by using consensus raw datasets (e.g. WGS in patients and families), which is annotated and filtered to several \ac{qv} levels.
-The resulting pre-processed datasets are suitable for a range of analysis including \ac{gwas}, \ac{vsat}, single-case clinical genetics reports, machine learning, and joint multiomic analysis. 
+In our own work, we are applying the \ac{qv} framework within ``SwissPedHealth'', a national paediatric data stream aimed at investigating rare or unknown diseases using a multiomic approach, including \ac{wgs}, RNAseq, proteomics, and clinical data \cite{mozun2024paediatric}. By using consensus raw datasets (e.g. WGS in patients and families) that are annotated and filtered to multiple \ac{qv} levels, we obtain pre-processed datasets suitable for a range of analyses including \ac{gwas}, \ac{vsat}, single-case clinical genetics reporting, machine learning and joint multiomic studies.
 
-National-scale projects reuse data many times and naturally require the use of \ac{qv}, currently in the traditional format; mixed throughout pipelines without explicit distinction.
-The  Genomics England 100,000 Genomes Project performs central automated analysis with interpretation and clinical reporting \cite{turnbull2018100}. 
-This data is then used in many subsequent research projects. 
-One significant application of \ac{qv} protocols is in genomics-based newborn screening, which has been gaining traction as a pivotal healthcare innovation
-\cite{noauthor_every_2024}. 
+Large national-scale projects, such as the Genomics England 100,000 Genomes Project, which performs central automated analysis with interpretation and clinical reporting \cite{turnbull2018100}, rely on \ac{qv} protocols, although these are currently embedded throughout pipelines without explicit standardisation. Moreover, \ac{qv} protocols are increasingly important in genomics-based newborn screening, a rapidly emerging healthcare innovation \cite{noauthor_every_2024}.
+
 
 \subsubsection{Rapid diagnostics}
 % WGS diagnostic
-Screening for known disease is by default, based on searching for a known \ac{qv} set. 
-The use of a formalised standard would allow for consistency and reliability for stakeholders. 
-Genome analysis in neurodevelopmental disorders in 465 families found causal variants in 36\% of 489 affected individuals \citep{sanchis2023genome}.
-The DDD study involved over 13,500 families; approximately 41\% of probands received a genetic diagnosis \cite{wright2023genomic}.
-Genomic lifespan association in Iceland was reported by \citet{jensson2023actionable}, which included 57,933 participants, identifying 2,306 individuals with actionable genotypes linked to a decrease in median lifespan by approximately three years for carriers.
+Screening for known diseases typically involves searching for a predefined \ac{qv} set. The adoption of a formalised standard would enhance consistency and reliability for stakeholders. For instance, genome analysis in neurodevelopmental disorders in 465 families identified causal variants in 36\% of 489 affected individuals \citep{sanchis2023genome}, while the DDD study, involving over 13,500 families, achieved a genetic diagnosis in approximately 41\% of probands \cite{wright2023genomic}. In addition, genomic lifespan association studies in Iceland, which included 57,933 participants, identified 2,306 individuals with actionable genotypes associated with a reduction in median lifespan by around three years \citep{jensson2023actionable}.
 
 % speed
-We propose that the use of standardised \ac{qv} can aid in developing rapid genomic diagnostics. 
-In UAE, rapid whole-genome sequencing - \citep{abou2023rapid}
-allowed for rapid whole-genome sequencing with a turnaround of 37 hours on average.
-\citet{meng2017use} reported on 278 critically ill infants; molecular diagnosis achieved in 36.7\% of cases, with higher rates (50.8\%) in critical trio exome cases. They reported an impacted medical management in 52.0\% of diagnosed cases.
-\citet{lunke2023integrated} reported in the national scale multi-omics for rare diseases, involving 290 critically ill infants and children; diagnostic yield from WGS initially at 47\%, increased to 54\% with extended analysis.
-Altered critical care  management occurred for 77\% of diagnosed cases.
+Rapid genomic diagnostics can be further enhanced by the use of standardised  \ac{qv} protocols. For example, in the United Arab Emirates, rapid whole-genome sequencing has been achieved with an average turnaround time of 37 hours \citep{abou2023rapid}. Moreover, \citet{meng2017use} reported that, among 278 critically ill infants, a molecular diagnosis was achieved in 36.7\% of cases, with higher diagnostic rates (50.8\%) observed in critical trio exome cases, and a subsequent impact on medical management in 52.0\% of diagnosed cases. Similarly, \citet{lunke2023integrated} demonstrated that, in a national-scale multiomic study for rare diseases involving 290 critically ill infants and children, the diagnostic yield from \ac{wgs} initially stood at 47\% but increased to 54\% with extended analysis, leading to altered critical care management in 77\% of diagnosed cases.
 
 \subsubsection{Complex variant calls}
 % other types of analysis
-Additionally, using the \ac{qv} framework for different analysis types, such as SNV-INDEL, copy-number variants, and structural variants, means that simple \ac{qv} IDs can be used for database reporting. 
-Researchers can then easily query whether or not additional analysis is expected to reveal more findings. 
-For instance,
-\citet{wojcik2024genome} used genome sequencing in 822 families with rare monogenic diseases, achieving a diagnostic yield of 29.3\%.
-They focused on broader genomic coverage including structural and non-coding variants, identifying causative variants in 8.2\% of cases previously undetected by exome sequencing.
+
+In addition, applying the \ac{qv}  framework to diverse analysis types, including \ac{snv}-\ac{indel}, copy-number variants, and structural variants, allows simple \ac{qv}  IDs to be used for database reporting. This facilitates querying to determine whether further analysis may reveal additional findings. For example, \citet{wojcik2024genome} employed genome sequencing in 822 families with rare monogenic diseases, achieving a diagnostic yield of 29.3\%. Their broader genomic coverage, which included structural and non-coding variants, identified causative variants in 8.2\% of cases that were previously undetected by exome sequencing.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 \subsubsection{Secondary findings}
 \label{sec:sf}
-The \ac{acmg} \ac{sf} v3.2 list, exemplifies a well-defined and impactful application of \ac{qv} standards in genomic medicine 
-\cite{miller2023acmg}. 
-This list specifies gene-phenotype pairs recommended for reporting as secondary findings during clinical exome and genome sequencing. 
-Such standardisation not only streamlines the identification of clinically actionable genetic information but also enhances the consistency and quality of genomic data interpretation across different settings.
-The key limitation is that this dataset is relatively unstructured meaning that each implementation requires extensive work and care on the part of front-line analysts. 
-The \ac{acmg} \ac{sf} list is revised annually, reflecting its dynamic nature and the evolving understanding of gene-disease correlations. 
-Each version, such as the current v3.2, includes detailed criteria for the inclusion or exclusion of specific genes, based on rigorous evidence of their association with significant health outcomes. 
-This methodical approach to curating the \ac{sf}  list ensures that it remains a reliable resource for opportunistic screening in a clinical context.
+%The \ac{acmg} \ac{sf} v3.2 list, exemplifies a well-defined and impactful application of \ac{qv} standards in genomic medicine 
+%\cite{miller2023acmg}. 
+%This list specifies gene-phenotype pairs recommended for reporting as secondary findings during clinical exome and genome sequencing. 
+%Such standardisation not only streamlines the identification of clinically actionable genetic information but also enhances the consistency and quality of genomic data interpretation across different settings.
+%The key limitation is that this dataset is relatively unstructured meaning that each implementation requires extensive work and care on the part of front-line analysts. 
+%The \ac{acmg} \ac{sf} list is revised annually, reflecting its dynamic nature and the evolving understanding of gene-disease correlations. 
+%Each version, such as the current v3.2, includes detailed criteria for the inclusion or exclusion of specific genes, based on rigorous evidence of their association with significant health outcomes. 
+%This methodical approach to curating the \ac{sf}  list ensures that it remains a reliable resource for opportunistic screening in a clinical context.
 
-\textbf{Table \ref{tab:transposed_acmg_sf_list}} lists the first two entries (transposed) from the \ac{acmg} \ac{sf} list showcasing specific genes associated with cardiovascular phenotypes.
-We then represent this data in a standardised \ac{qv} format in
-\textbf{box
-\ref{box:qv_variables_example_sf} - 
-\ref{box:qv_variables_example_sf2}},
-which can be used in any variant filtering program as demonstrated.
-In bioinformatics pipelines, specifying \ac{qv} sets consistently, such as \ac{acmg} \ac{sf} v3.2 allows patients to receive the most relevant and up-to-date information regarding their genetic health risks, without missing out on simple checks due to the burden of manually implementing new \ac{qv}. 
+
+The \ac{acmg} \ac{sf} v3.2 list exemplifies a well-defined and impactful application of \ac{qv} standards in genomic medicine \cite{miller2023acmg}. This list specifies gene-phenotype pairs recommended for reporting as secondary findings during clinical exome and genome sequencing. Such standardisation streamlines the identification of clinically actionable genetic information and enhances the consistency and quality of genomic data interpretation across different settings. However, the dataset is relatively unstructured, requiring extensive manual curation by front-line analysts for each implementation. The \ac{acmg} \ac{sf} list is revised annually, reflecting its dynamic nature and the evolving understanding of gene-disease correlations. Each version, such as the current v3.2, includes detailed criteria for the inclusion or exclusion of specific genes, based on rigorous evidence of their association with significant health outcomes. This methodical curation ensures that the list remains a reliable resource for opportunistic screening in clinical contexts.
+
+%\textbf{Table \ref{tab:transposed_acmg_sf_list}} lists the first two entries (transposed) from the \ac{acmg} \ac{sf} list showcasing specific genes associated with cardiovascular phenotypes.
+%We then represent this data in a standardised \ac{qv} format in
+%\textbf{box
+%\ref{box:qv_variables_example_sf} - 
+%\ref{box:qv_variables_example_sf2}},
+%which can be used in any variant filtering program as demonstrated.
+%In bioinformatics pipelines, specifying \ac{qv} sets consistently, such as \ac{acmg} \ac{sf} v3.2 allows patients to receive the most relevant and up-to-date information regarding their genetic health risks, without missing out on simple checks due to the burden of manually implementing new \ac{qv}. 
+
+\textbf{Table \ref{tab:transposed_acmg_sf_list}} lists the first two transposed entries from the \ac{acmg} \ac{sf} list, showcasing specific genes associated with cardiovascular phenotypes. We subsequently represent this data in a standardised \ac{qv} format (see \textbf{Boxes \ref{box:qv_variables_example_sf}–\ref{box:qv_variables_example_sf2}}), which can be incorporated into any variant filtering program. In bioinformatics pipelines, consistent specification of \ac{qv} sets, such as \ac{acmg} \ac{sf} v3.2, enables patients to receive the most relevant and up-to-date information regarding their genetic health risks without the burden of manually implementing new \ac{qv} standards.
 
 \begin{table}[ht]
 \centering
@@ -600,6 +687,28 @@ For each gene entry in genes:
     input.vcf > output_{gene['gene']}_qv_sf.vcf
 \end{verbatim}
 \end{tcolorbox}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 \subsection{Enhancing semantic interoperability}
 The \ac{sphn} promotes data sharing based on the FAIR principles, supported through the \ac{sphn} \ac{rdf} Schema to enhance semantic interoperability, particularly for clinical routine data
@@ -678,14 +787,14 @@ We prepared this annotation interpretation dataset in R with GuRu, our variant i
 \begin{figure}[!h]
     \centering
    \includegraphics[width=0.85\textwidth]{./images/Guru_singlecase_distribution_variables.pdf}
-       \caption{Example of the annotated dataset describing variant calls from the disease cohort on chromosome 1. The subset shown highlights key variables used in quality control and variant interpretation, resulting in 596 variants with 377 annotation fields per variant for 940 subjects. Axis which contain many term labels are down sampled to list every tenth  label (n=10 samp). Genotype 1 is heteterzygous, 2 is homozygous; gnomAD AF is allele frequency in the gnomAD population database, inheritance patterns \ac{ad} Autosomal Dominant, \ac{ar} Autusomal Recessive.}
+       \caption{Example of the annotated dataset describing variant calls from the disease cohort on chromosome 1. The subset shown highlights key variables used in quality control and variant interpretation, resulting in 596 variants with 377 annotation fields per variant for 940 subjects. Axis which contain many term labels are down sampled to list every tenth  label (n=10 samp). Genotype 1 is heterozygous, 2 is homozygous; gnomAD AF is allele frequency in the gnomAD population database, inheritance patterns \ac{ad} Autosomal Dominant, \ac{ar} Autosomal Recessive.}
     \label{fig:guru_case_study_setup}
 \end{figure}
 \FloatBarrier
 
 We selected the first eight ACMG criteria for assigning pathogenicity scores to variants \cite{richards2015standards}. Of these eight, six were relevant for the cohort.
-First, we performed this analysis manually by hard coding each criterion in the script, reflecting a typical analysis scenario. Second, we imported the same criteria from the \ac{qc} YAML file to represent our standardised approach. We captured the outputs from both scoring methods and compared them, as shown in \textbf{figure \ref{fig:guru_case_study_result}}.
-The \ac{qv} criteria in YAML format are found in file \texttt{qv\_files/acmg\_criteria.yaml} and are in the following style in 
+First, we performed this analysis manually by hard coding each criterion in the pipeline script, reflecting a typical analysis scenario. Second, we imported the same criteria from the \ac{qv} YAML file to represent our standardised approach. We captured the outputs from both scoring methods and compared them, as shown in \textbf{figure \ref{fig:guru_case_study_result}}.
+The \ac{qv} criteria were provided in YAML format in the file \texttt{qv\_files/acmg\_criteria.yaml} as highlighted in 
 \textbf{box \ref{box:acmg_criteria_yaml}}:
 
 \begin{tcolorbox}[
@@ -723,14 +832,15 @@ acmg_criteria.yaml
 \end{tcolorbox}
 \FloatBarrier
 
+
+Our results, presented in \textbf{figure \ref{fig:guru_case_study_result}}, show a 100\% match between the two methods, demonstrating that the criteria can be imported from YAML and applied programmatically to achieve the same outcome. This is not necessarily surprising, as the burden of accuracy remains in the implementation. However, the \ac{qc} YAML file acts as a shareable, standalone resource that can be adapted for different pipelines or programming languages, ensuring reproducibility for \ac{qv} criteria.
+
 \begin{figure}[!h]
 \centering
 \includegraphics[width=0.99\textwidth]{./images/Guru_singlecase_validation_of_yaml_vs_manual.pdf}
 \caption{GuRu case study with an ACMG criteria subset, showing a 100\% match between manually encoded and YAML-based methods (\texttt{qv\_files/acmg\_criteria.yaml}) for assigning pathogenicity scores.}
 \label{fig:guru_case_study_result}
 \end{figure}
-
-Our results, presented in \textbf{figure \ref{fig:guru_case_study_result}}, show a 100\% match between the two methods, demonstrating that the criteria can be imported from YAML and applied programmatically to achieve the same outcome. This is not necessarily surprising, as the burden of accuracy remains in the implementation. However, the \ac{qc} YAML file acts as a shareable, standalone resource that can be adapted for different pipelines or programming languages, ensuring reproducibility for \ac{qv} criteria.
 
 The YAML criteria used here include \texttt{ACMG\_PS1}, described as``the same amino acid change was a previously established pathogenic variant regardless of nucleotide change.'' It includes \texttt{terms} containing ``pathogenic,'' applies to the \texttt{CLIN\_SIG} (clinical significance) annotation field, and uses ``or'' logic. We also included \texttt{ACMG\_PS3}, which describes well-established functional studies supporting a damaging effect on the gene product, with a user-defined inheritance pattern matching the genotype, and \texttt{ACMG\_PS5}, which covers compound heterozygosity with at least one high-impact variant (according to Ensembl VEP definitions). The \texttt{ACMG\_PM2} criterion states that the variant is absent from controls or present at extremely low frequency in gnomAD or other population databases. For \texttt{ACMG\_PM3}, the criterion checks for variants in trans with a pathogenic variant in recessive disorders, showing some overlap with PS5 because our rare disease cohort filtering already treats ``IMPACT = HIGH'' as pathogenic.
 
@@ -745,35 +855,7 @@ Subsequently, we briefly demonstrate why such \ac{qv} criteria are necessary. In
 \caption{Overview of the final annotation interpretation for the test disease cohort, illustrating the number of criteria applied both for subject samples (left) and for variants (right). This facilitates subsequent retrieval of the top candidate pathogenic variants automatically.}
 \label{fig:guru_case_study_guruscores}
 \end{figure}
-
-%> print(validation_combined)
-%   Var1 Count Criterion    method
-%1     0   589 ACMG_PVS1   QV_yaml
-%2     8     7 ACMG_PVS1   QV_yaml
-%3     0   562  ACMG_PS1   QV_yaml
-%4     4    34  ACMG_PS1   QV_yaml
-%5     0   435  ACMG_PS3   QV_yaml
-%6     4   161  ACMG_PS3   QV_yaml
-%7     0   584  ACMG_PS5   QV_yaml
-%8     4    12  ACMG_PS5   QV_yaml
-%9     0   591  ACMG_PM2   QV_yaml
-%10    2     5  ACMG_PM2   QV_yaml
-%11    0   570  ACMG_PM3   QV_yaml
-%12    2    26  ACMG_PM3   QV_yaml
-%13    0   589 ACMG_PVS1 QV_manual
-%14    8     7 ACMG_PVS1 QV_manual
-%15    0   562  ACMG_PS1 QV_manual
-%16    4    34  ACMG_PS1 QV_manual
-%17    0   435  ACMG_PS3 QV_manual
-%18    4   161  ACMG_PS3 QV_manual
-%19    0   584  ACMG_PS5 QV_manual
-%20    4    12  ACMG_PS5 QV_manual
-%21    0   591  ACMG_PM2 QV_manual
-%22    2     5  ACMG_PM2 QV_manual
-%23    0   570  ACMG_PM3 QV_manual
-%24    2    26  ACMG_PM3 QV_manual
-%> print(dim(df))
-%[1] 596 377
+\FloatBarrier
 
 \subsection{Alignment with patient and public involvement needs}
 A key benefit of our framework is that it provides explicit citable documentation of which genetic variants are included or excluded in a database or report. 
@@ -803,15 +885,6 @@ Standardised database formats are thus critical for genomics and \ac{qv} should 
 
 \subsubsection{Applications in simple independent tests} 
 
-\begin{figure}[h]
-    \centering
-   \includegraphics[width=0.99\textwidth]{./images/qv_matrix.pdf}
-    \caption{Genotype matrices for three different layers of \ac{qv} analysed in genetic studies. Each matrix represents a specific set, showing the genotypes of three individuals for three SNPs (SNP1, SNP2, SNP3).
-    In the \ac{qv}1 layer, SNP1 and SNP3 qualify as a QV (highlighted in red). The genotypes are for \ac{qv} are coded as 0 for homozygous reference, 1 for heterozygous, and 2 for homozygous alternative.
-    }
-    \label{fig:qv_matrix}
-\end{figure}
-
 An example of a multi-part analysis with sets \ac{qv} sets 1, 2, and 3, 
 is illustrated in 
 \textbf{Figure \ref{fig:qv_matrix}}.
@@ -824,6 +897,16 @@ By employing \ac{acat}, we can synthesize findings from multiple \ac{qv} filters
 This method is useful in scenarios where variants across different \ac{qv} sets may contribute in varying degrees to the phenotype, allowing for a nuanced analysis that respects the complexity of genomic data.
 The combination method must be adapted in scenarios where variants (or collapsed variant sets) do not overlap. 
 We have previously provided methods to plot the results of such analysis with \href{https://github.com/DylanLawless/archipelago}{archipelago}  (cite pre-print instead of package).
+
+
+\begin{figure}[h]
+    \centering
+   \includegraphics[width=0.99\textwidth]{./images/qv_matrix.pdf}
+    \caption{Genotype matrices for three different layers of \ac{qv} analysed in genetic studies. Each matrix represents a specific set, showing the genotypes of three individuals for three SNPs (SNP1, SNP2, SNP3).
+    In the \ac{qv}1 layer, SNP1 and SNP3 qualify as a QV (highlighted in red). The genotypes are for \ac{qv} are coded as 0 for homozygous reference, 1 for heterozygous, and 2 for homozygous alternative.
+    }
+    \label{fig:qv_matrix}
+\end{figure}
 
 \subsubsection{Applications in complex data and multiblock fusion} 
 
