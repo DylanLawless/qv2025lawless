@@ -11,6 +11,6 @@ FAIR data is data which meets the FAIR principles of findability, accessibility,
 
 ## QV YAML Files SHA256 Checksums
 
-| View Link | Direct Download | Filename | SHA256 |
-| --------- | --------------- | -------- | ------ |
-| [View](src/qv_files/qv_acmg_svnindel_criteria_20250225.yaml) | [Download](/assets/qv_database/qv_acmg_svnindel_criteria_20250225.yaml){:download="qv_acmg_svnindel_criteria_20250225.yaml"} | qv_acmg_svnindel_criteria_20250225.yaml | `004af358178c99ef54029984cd37721986b879bc845d2a1162fbece02627e190` |
+| View Link | Filename | SHA256 |
+| --------- | -------- | ------ |
+| [View](src/qv_files/qv_acmg_svnindel_criteria_20250225.yaml) | qv_acmg_svnindel_criteria_20250225.yaml | `d91fde41a5fff48631adecba38773d619ae8cd5cff9b9b42ef7f5efbd6bbfcdf` |
