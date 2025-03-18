@@ -2,7 +2,7 @@ ACMG_PVS1:
   description: >
     Null variants (IMPACT = HIGH) in genes where loss-of-function causes disease.
     Includes homozygous variants, dominant inheritance, and compound heterozygous cases.
-    Compound heterozygosity is considered when both variants are HIGH impact. WARNING: Not phase checked.
+    Compound heterozygosity is considered when both variants are HIGH impact. WARNING: Consider if phase checked.
   logic: "or"
   conditions:
     - condition:
@@ -78,7 +78,6 @@ ACMG_PS5:
           - sample
           - SYMBOL
         count: ">1"
-
 
 ACMG_PM2:
   description: >
