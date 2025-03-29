@@ -18,6 +18,7 @@ input_directory <- "../data/"
 output_directory <- "../output/"
 images_directory <- "../images/"
 gnomad_freq_thresh_local <- ""
+large_input_directory <- "~/web/spss_exome_vsat/data/ACMGuru_singlecase/"
 
 # acmg ----
 # For reference
@@ -49,13 +50,14 @@ varsome <- read.table(file = "../ref/varsome_calibrated_insilico_thresholds.tsv"
 
 # qv ----
 # Define the chromosome identifiers
-# chromosomes <- c(1:22, "X")
+chromosomes <- c(1:22, "X")
 # chromosomes <- c(21:22, "X") # TEMP TEST
-chromosomes <- c(1)
+# chromosomes <- c(1)
 
 # Generate file names using paste0 and the chromosome identifiers
 file_list <- paste0(
-  input_directory, "bcftools_gatk_norm_maf01.recode_vep_conda_impact_iuis_gnomad_af1_chr_", 
+  # input_directory, "bcftools_gatk_norm_maf01.recode_vep_conda_impact_iuis_gnomad_af1_chr_", 
+  large_input_directory, "bcftools_gatk_norm_maf01.recode_vep_conda_impact_iuis_gnomad_af1_chr_", 
   chromosomes, 
   ".vcf.gz"
 )

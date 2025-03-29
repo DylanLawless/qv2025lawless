@@ -1,5 +1,5 @@
-acmg_criteria <- yaml::read_yaml("./qv_files/acmg_criteria.yaml")
-
+# acmg_criteria <- yaml::read_yaml("./qv_files/acmg_criteria.yaml")
+acmg_criteria <- yaml::read_yaml("./qv_files/qv_acmg_svnindel_criteria_20250225.yaml")
 
 # acmg_filters ----
 print("We are adding PS3 now")
@@ -120,7 +120,7 @@ library(yaml)
 library(dplyr)
 
 # Load ACMG criteria from YAML file
-acmg_criteria <- yaml::read_yaml("./qv_files/acmg_criteria.yaml")
+# acmg_criteria <- yaml::read_yaml("./qv_files/acmg_criteria.yaml")
 
 # Define function to apply ACMG_PVS1 dynamically
 apply_acmg_pvs1 <- function(df, criteria) {
@@ -254,7 +254,7 @@ table(df$ACMG_PS3)
 # PS5 ----
 # The user has additional (value) strong pathogenic evidence:
 # comp_het with at least 1 HIGH impact. WARNING NOT PHASE CHECKED
-acmg_criteria <- yaml::read_yaml("./qv_files/acmg_criteria.yaml")
+# acmg_criteria <- yaml::read_yaml("./qv_files/acmg_criteria.yaml")
 ps5_criteria <- acmg_criteria$ACMG_PS5
 df$ACMG_PS5 <- NA
 
@@ -295,7 +295,7 @@ library(yaml)
 library(dplyr)
 
 # Load ACMG criteria from the YAML file
-acmg_criteria <- yaml::read_yaml("./qv_files/acmg_criteria.yaml")
+# acmg_criteria <- yaml::read_yaml("./qv_files/acmg_criteria.yaml")
 
 # Define function to apply ACMG PM2 dynamically
 apply_acmg_pm2 <- function(df, criteria) {
@@ -346,7 +346,7 @@ table(df$ACMG_PM2)
 # some redundancy with our PS5 since our rare disease cohort filtering call IMPACT==HIGH equates pathogenic
 
 # Load ACMG criteria from YAML file
-acmg_criteria <- yaml::read_yaml("./qv_files/acmg_criteria.yaml")
+# acmg_criteria <- yaml::read_yaml("./qv_files/acmg_criteria.yaml")
 pm3_criteria <- acmg_criteria$ACMG_PM3
 
 df$ACMG_PM3 <- NA

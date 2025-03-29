@@ -17,24 +17,29 @@
 %\begin{definition}[label=def:VariantOutcomesDetailed]
 %\end{definition}\\
 
-\title{Conceptualising qualifying variants for genomic analysis}
+\title{Application of qualifying variants for genomic analysis}
 
 % target: Scientific data https://www.nature.com/sdata/author-instructions
 % target: Bioinformatics https://academic.oup.com/bioinformatics/
 
-\author[1]{Dylan Lawless\thanks{Addresses for correspondence: \href{mailto:Dylan.Lawless@uzh.ch}{Dylan.Lawless@uzh.ch}}}
+\author[1]{Dylan Lawless\thanks{Addresses for correspondence: \href{mailto:Dylan.Lawless@uzh.ch}{Dylan.Lawless@kispi.uzh.ch}}}
 \author[2]{Ali Saadat}
 \author[2]{Mariam Ait Oumelloul}
 \author[2]{Simon Boutry}
 \author[1]{Veronika Stadler}
 \author[3]{Sabine Österle}
 \author[3]{Jan Armida}
+\author[4]{David Haerry}
+\author[5]{Sean D. Froese}
 \author[2]{Jacques Fellay}
 %\author[1]{Consortium Members}
 \author[1]{Luregn J. Schlapbach}
 \affil[1]{Department of Intensive Care and Neonatology, University Children's Hospital Zürich, University of Zürich, Switzerland.}
 \affil[2]{Global Health Institute, School of Life Sciences, École Polytechnique Fédérale de Lausanne, Switzerland.}
 \affil[3]{Personalized Health Informatics Group, SIB Swiss Institute of Bioinformatics, Basel, Switzerland.}
+\affil[4]{Positive Council, Zürich, Switzerland}
+\affil[5]{Division of Metabolism and Children’s Research Center, University Children’s Hospital Zürich, University of Zurich, Zurich, Switzerland}
+
 
 \maketitle
 \justify
@@ -48,14 +53,17 @@
 \noindent
 \textbf{Motivation:} \\[1ex]
 Qualifying variants (QVs) are genomic alterations selected using defined criteria within genomic processing pipelines. Although essential for both genetic research and clinical diagnostics, QVs are typically regarded as simple filters rather than dynamic, multifaceted components that influence the entire analytical workflow. Existing best practices adhere to variant classification standards and standardised workflows, yet a unified framework to integrate and optimise QVs for advanced, multi-stage applications is lacking.
-
+\\[1ex]
 \noindent
 \textbf{Results:} \\[1ex]
-We propose a redefinition of QVs by outlining several common QV sets and demonstrating their roles within analysis pipelines. By introducing new terminology and a standard reference model, our framework enables systematic integration and standardisation of QVs, thereby enhancing reproducibility, interpretability, and interdisciplinary communication. A validation case study, implementing ACMG criteria in a disease cohort demonstrates that our standardised approach achieves results identical to conventional methods while offering improved clarity and scalability.
-
+We propose a redefinition of QVs by outlining several common QV sets and demonstrating their roles within analysis pipelines. By introducing new terminology and a standard reference model, our framework enables systematic integration and standardisation of QVs, thereby enhancing reproducibility, interpretability, and interdisciplinary communication. A validation case study, implementing \ac{acmg} criteria in a disease cohort demonstrates that our standardised approach achieves results identical to conventional methods while offering improved clarity and scalability.
+\\[1ex]
 \noindent
 \textbf{Availability:} \\[1ex]
-The source code and data are accessible at \url{https://github.com/DylanLawless/qv2025lawless}. The QV framework is available under the MIT licence, and the dataset will be maintained for at least two years following publication.
+The source code and data are accessible at \url{https://github.com/DylanLawless/qv2025lawless}. The QV file used in this work is available from
+\url{https://doi.org/10.5281/zenodo.15105594} (\texttt{qv\_acmg\_svnindel\_criteria\_20250225.yaml}). The QV framework is available under the MIT licence, and the dataset will be maintained for at least two years following publication.
+
+% A public submission database is accessible via github with a front end at \url{https://switzerlandomics.ch/services/qv_database/}.
 \end{abstract}
 
 \clearpage
@@ -72,11 +80,11 @@ The source code and data are accessible at \url{https://github.com/DylanLawless/
  \acro{ad}[AD]{Autosomal Dominant}
  \acro{ar}[AR]{Autosomal Recessive}
   \acro{cnv}[CNV]{Copy Number Variant}
- \acro{fair}[FAIR]{Findability, Accessibility, Interoperability, and Reusability}
- \acro{gatk}[GATK]{Genome Analysis Took Kit}
- \acro{gwas}[GWAS]{Genome Wide Association Test}
+ \acro{fair}[FAIR]{Findable, Accessible, Interoperable, and Reusable}
+ \acro{gatk}[GATK]{Genome Analysis Tool Kit}
+ \acro{gwas}[GWAS]{Genome Wide Association Study}
  \acro{indel}[INDEL]{Insertion / Deletion}
- \acro{iri}[IRI]{internationalised resource identifier}
+ \acro{iri}[IRI]{Internationalised Resource Identifier}
  \acro{maf}[MAF]{Minor Allele Frequency}
  \acro{ppi}[PPI]{Patient and Public Involvement}
  \acro{prs}[PRS]{Polygenic Risk Score} 
@@ -85,11 +93,15 @@ The source code and data are accessible at \url{https://github.com/DylanLawless/
  \acro{rdf}[RDF]{Resource Description Framework}
  \acro{ax}[QV\textsubscript{ax}]{Axiomatic Variants}
  \acro{sf}[SF]{Secondary Findings}
+ \acro{sha256}[SHA-256]{Secure Hash Algorithm 256}
  \acro{skat}[SKAT]{sequence kernel association test} 
  \acro{snv}[SNV]{Single nucleotide Variant}
   \acro{snvindel}[SNV/INDEL]{Single Nucleotide Variant / Insertion Deletion}
+  \acro{snomedct}[SNOMED CT]{Systematized Nomenclature of Medicine-Clinical Terms}
  \acro{snp}[SNP]{Single Nucleotide Polymorphism}
  \acro{sphn}[SPHN]{Swiss Personalized Health Network}
+ \acro{uuid}[UUID]{Universally Unique Identifier}
+  \acro{vep}[VEP]{Variant Effect Predictor}
  \acro{vqsr}[VQSR]{Variant Quality Score Recalibration}
  \acro{vsat}[VSAT]{Variant Set Association Test}
  \acro{vus}[VUS]{Variants of Unknown Significance}
@@ -101,77 +113,114 @@ The source code and data are accessible at \url{https://github.com/DylanLawless/
 \section{Introduction}
 \label{sec:intro}
 
-Qualifying variants (\ac{qv}s) are genomic alterations selected by specific criteria within genome processing pipelines, serving as dynamic elements essential for both research and clinical diagnostics. 
+\ac{qv}s are genomic alterations selected by specific criteria within genome processing pipelines, serving as dynamic elements essential for both research and clinical diagnostics. 
 \ac{qv}s are not merely static filters applied at a single step in an analysis pipeline; rather, they are dynamic, multifaceted elements that permeate the entire workflow, from initial data quality control to final result interpretation. This nuanced perspective underscores that \ac{qv}s play an integral role in shaping the fidelity and reproducibility of genomic analyses, enabling the iterative refinement of data and facilitating the integration of diverse analytical strategies throughout the pipeline.
 
 Often, \ac{qv} selection adheres to established variant classification and reporting standards \cite{richards2015standards, li2017standards, li2017intervar, riggs2020technical, tavtigian2020fitting} and standardised workflows \cite{pedersen2021effective, anderson2010data, uffelmann2021genome}. 
 However a unified framework for \ac{qv}s is lacking, despite the recognised benefits of similar initiatives, such as \ac{prs} reporting standards \cite{wand2021improving, lambert2021polygenic}.
-For instance, tools like vcfexpress \cite{pedersen_vcfexpress_2025} enable flexible, rapid filtering and formatting of VCF files using user-defined lua expressions. By providing filtering criteria in a standardised \ac{qv} format, our approach complements such tools
+For instance, tools like vcfexpress \cite{pedersen_vcfexpress_2025} enable flexible, rapid filtering and formatting of VCF files using user-defined expressions. By providing filtering criteria in a standardised \ac{qv} format, our approach complements such tools.
+This role is particularly important for reproducibility across distributed computing environments \cite{bal_programming_1989}.
+This approach integrates with workflow managers such as Snakemake \cite{molder_sustainable_2021} or Nextflow \cite{di_tommaso_nextflow_2017}, streamlining genomic processing tasks.
 
-The criteria for \ac{qv} selection vary by application. For example, \ac{gwas} may focus on common variants, while clinical analyses usually target rare or known pathogenic variant. 
-\textbf{Figure \ref{fig:qv_pipeline_with_file_vcurrent_guru_case_study_result}}
+The criteria for \ac{qv} selection vary by application. 
+For example, \ac{gwas} may focus on common variants, while clinical analyses usually target rare or known pathogenic variants. 
+%\textbf{Figure \ref{fig:qv_pipeline_with_file_vcurrent_guru_case_study_result} (A)}
 % and \ref{fig:qv_filter_pyramid_vcurrent} 
-illustrates a typical \ac{wgs} and variant filtering pipeline, where \ac{qv} steps—from initial quality control to subsequent annotation-based filtering—are integrated.
-
+%illustrates a typical \ac{wgs} and variant filtering pipeline, where \ac{qv} steps, from initial quality control to subsequent annotation-based filtering, are integrated.
 Previous studies have demonstrated the utility of \ac{qv}s \cite{povysil2019rare, cirulli2015exome}, yet no standardised framework exists. 
 %For example, typical uses include applying \ac{qv}s that pass \ac{qc} only to generate large datasets (e.g. 500,000 variants per subject) for initial processing, employing flexible \ac{qv}s to create intermediate datasets for rare variant testing (e.g. fewer than 100,000 variants per subject), using stringent \ac{qv} protocols for rare disease to yield smaller datasets (e.g. around 1,000 variants per subject), and applying known disease panel \ac{qv} sets, such as the \ac{acmg} \ac{sf} set, for clinical reporting \cite{miller2023acmg}.
 Here, we detail four typical applications of \ac{qv} sets:
 \begin{enumerate}
-    \item \textbf{\ac{qv} passing \ac{qc} only}: Generates large datasets (e.g. 500,000 variants per subject) for \ac{gwas} or initial \ac{wgs} pre-processing.
-    \item \textbf{Flexible \ac{qv}}: Balances between \ac{qc} and false positives, yielding intermediate datasets (e.g. fewer than 100,000 variants per subject) for rare variant association testing.
-    \item \textbf{\ac{qv} for rare disease}: Applies stringent filtering to produce smaller datasets (e.g. around 1,000 variants per subject), targeting known genes or single causal variants.
-    \item \textbf{Known disease panel \ac{qv} set}: Utilises well-established gene panels with pathogenic variants (e.g. the \ac{acmg} \ac{sf} set) for clinical reporting \cite{miller2023acmg}.
+    \item \textbf{\ac{qv} passing \ac{qc} only}: Generates large datasets (e.g. > 500,000 variants per subject) for \ac{gwas} or initial \ac{wgs} pre-processing.
+    \item \textbf{Flexible \ac{qv}}: Balances between \ac{qc} and false positives, yielding intermediate datasets (e.g. fewer than 100,000 variants per subject) for uses such as rare variant association testing.
+    \item \textbf{\ac{qv} for rare disease}: Applies stringent filtering to produce smaller datasets (e.g. < 1,000 variants per subject), targeting known genes or single causal variants.
+    \item \textbf{Known disease panel \ac{qv} set}: Focuses on well-established gene panels with pathogenic variants (e.g. the \ac{acmg} \ac{sf} set) for clinical reporting \cite{miller2023acmg}.
 \end{enumerate}
 
- These examples illustrate a small few common applications without providing an exhaustive classification of all possible \ac{qv} uses.
+ These examples illustrate a few common applications without providing an exhaustive classification of all possible \ac{qv} uses.
 The careful selection and categorisation of \ac{qv}s are thus critical for accurate reporting and reproducibility, sometimes even more so than the choice of the analysis pipeline itself \cite{olson2023variant}.
 
 As \ac{wgs} becomes standard for large cohorts \cite{lee2018gene, jansen2019genome}, the integration of diverse \ac{qv} protocols is critical for data cleaning and analysis. 
 % Figure~\ref{fig:qv_structure_vcurrent} depicts how 
 During sequencing analysis several layers can be responsible for triggering \ac{qv} protocols, including
 pre-existing metadata, technical \ac{qc} results, and post-calling annotations,
-highlighting the need for a clear, standardised vocabulary. Our framework offers structured, human- and machine-readable definitions that adhere to the principles for  \ac{fair} \cite{wilkinson2016fair}, thereby promoting  integration across databases. 
+highlighting the need for a clear, standardised vocabulary. Our framework offers structured, human- and machine-readable definitions that adhere to the principles for  \ac{fair} \cite{wilkinson2016fair}, thereby promoting  integration across databases \cite{van2023bridging, toure2023fairification}.
 We implement standard vocabularies, unique identifiers, and formats like YAML to support this integration.
-By explicitly documenting variant filtering criteria and making \ac{qv} data available in accessible formats, our framework builds trust and supports meaningful \ac{ppi} \cite{morris_answer_2011}. This transparency ensures that both experts and lay persons receive information in a format suited to their needs, improving diagnostic traceability and accelerating the translation of genetic research into clinical practice.
 
+% Note via David: Add a sentence that bridges technical details to a lay explanation. Clarify that the guidelines or reasons for QV choice can be challenging for lay readers. Consider making the lay interpretation mandatory in the QV, rather than as an extra step during genetic report conversion. Also, explore incorporating patient preferences directly into the QV selection, keeping in mind that clinician and patient priorities may differ.
+
+In a clinical setting it is necessary to bridge the gap between technical detail and lay understanding. By explicitly documenting variant qualifying criteria and making \ac{qv} data accessible, our framework builds trust and supports meaningful \ac{ppi} \cite{morris_answer_2011}. The \ac{qv} file adapts by integrating the main criteria variables with a optionally dedicated fields for both technical description and \ac{ppi} description. This approach captures the analysis intent defined by the \ac{qv} set creator and embeds patient preferences from the start. % Consequently, patient-targeted information is automatically included in the genetic report without extra interpretation, ensuring clarity, consistency, and transparency for both experts and laypersons.
+For example, patient preferences recorded in the \ac{ppi} description can be automatically incorporated into a genetic report without additional interpretation, ensuring clarity and consistency throughout the analysis. This transparency guarantees that both experts and laypersons receive information in a format suited to their needs, thereby improving diagnostic traceability and accelerating the translation of genetic research into clinical practice.
+
+\begin{figure}[!h]
+\centering
+\begin{minipage}{0.85\textwidth}
+\raggedright A\\[0.5ex]
+\includegraphics[width=\textwidth]{./images/qv_pipeline_with_file_vcurrent.pdf}
+\end{minipage}\\[-2ex]
+\begin{minipage}{0.9\textwidth}
+\raggedright B\\[0.5ex]
+\includegraphics[width=\textwidth]{./images/Guru_singlecase_validation_of_yaml_vs_manual.pdf}
+\end{minipage}
+    \caption{Summary of the QV application for a WGS pipeline. In panel (A), \ac{qv}1 and \ac{qv}2 are presented as sequentially piped protocol steps. In this example, \ac{qv}2 differs from \ac{qv}1 by retaining only likely/pathogenic variants (indicated by a red X). The QV file loaded by the analysis pipeline comprise a description field (optional) and a variables field (mandatory). The \ac{qv} criteria may be spread throughout the pipeline.
+    (B) Validation case study using an \ac{acmg} criteria subset, demonstrating a 100\% match between manually encoded and standardised YAML-based methods (\texttt{qv\_files/acmg\_criteria.yaml}) for assigning pathogenicity scores.}
+    \label{fig:qv_pipeline_with_file_vcurrent_guru_case_study_result}
+\end{figure}
+%\begin{figure}[h!]
+%    \centering
+%   \includegraphics[width=0.8\textwidth]{./images/candidate_variants_effect_to_matrix_pink.pdf}
+%      \includegraphics[width=0.8\textwidth]{./images/candidate_variants_sequence_annotation_pink.pdf}
+%    \caption{
+%Top: 
+%    }
+%        \label{fig:candidate_variants_sequence_annotation}
+%\end{figure}
+
+\FloatBarrier
 \section{Methods}
 \subsection{Implementation} \label{sec:framework}
 
 By introducing a new vocabulary and a standard reference model for \ac{qv}s, we aim to clarify the concept and improve communication and methodological discussion across disciplines for more advanced tasks.
-We note a few brief configurations and roles within analysis pipelines:
-\begin{enumerate}
-    \item Theoretical pipelining of \ac{qv} sets.
-    \item Establishment of standardised \ac{qv} sets for specific analytical scenarios.
-    \item Recognition that \ac{qv}s are integral throughout the analysis pipeline rather than confined to a single end-stage.
-\end{enumerate}
+Implementation configurations and roles within analysis pipelines include, for example:
+theoretical pipelining of \ac{qv} sets,
+establishing public or standardised \ac{qv} sets for specific analytical scenarios, and 
+recognition that \ac{qv}s are integral throughout the analysis pipeline rather than confined to a single end-stage
 
-We introduce a simple framework for the effective use of \ac{qv}  protocols. This framework comprises three components, as illustrated in \textbf{Figure \ref{fig:qv_pipeline_with_file_vcurrent_guru_case_study_result}}:
-\begin{enumerate}
-    \item \textbf{Variables}: The criteria variables that are sourced as part of the pipeline (see \textbf{Box \ref{box:acmg_criteria_yaml}}).
-    \item \textbf{Description}: An optional, recommend, narrative of each step within the overall \ac{qv} set (see \textbf{Box \ref{box:acmg_criteria_yaml}}).
-    \item \textbf{Source code}: The implementation of the variables file within the pipeline code.
-\end{enumerate}
+We introduce a simple framework for the effective use of \ac{qv} protocols, comprising four components as illustrated in \textbf{Figure \ref{fig:qv_pipeline_with_file_vcurrent_guru_case_study_result} (A)}:
 
-This framework efficiently manages \ac{qv}-specific variables (e.g. allele frequency thresholds) separately from general pipeline settings, ensuring both clarity and specificity. The resulting format is versatile, supporting applications across WGS analysis, where it controls filtering and annotation, as well as downstream result interpretation and reporting, by linking the \ac{qv} set ID to both results and raw data sources in a database.
+\begin{itemize}
+    \item \textbf{1. Variables}: The criteria variables sourced as part of the pipeline (see \textbf{Box \ref{box:acmg_criteria_yaml}}).
+    \item \textbf{2a. Technical description}: An optional narrative detailing each step within the overall \ac{qv} set (see \textbf{Box \ref{box:acmg_criteria_yaml}}).
+    \item \textbf{2b. \ac{ppi} description}: An optional narrative providing a patient-focused interpretation of the protocol, incorporating preferences and priorities.
+    \item \textbf{3. \ac{qv} set ID}: A unique identifier that links analysis records.
+    \item \textbf{4. Source code}: The implementation of the variables file within the pipeline code, for example through custom scripts or workflow managers.
+\end{itemize}
+
+We also propose the \ac{qv} set ID as a unique identifier linking variant sets used in analyses. This facilitates integration into databases,
+by representing data in formats such as \ac{rdf} schemas \cite{toure2023fairification}, and allows for features including \ac{sha256} hash functions, \ac{uuid}s, semantic combinations, \ac{iri} incorporation, registry-based allocation, and standard mapping such as \ac{snomedct}. The results can be used alongside other genomic-specific concepts spanning from sample processing to the sequencing run \cite{van2023bridging}.
+
+This framework efficiently manages \ac{qv}-specific variables (e.g. allele frequency thresholds) separately from general pipeline settings, ensuring clarity and specificity. Its versatile format supports applications across genomic analyses and by linking the \ac{qv} set ID to both results and raw data sources in a database for downstream interpretation and reporting.
 
 \subsection{Example application of qualifying variants in WGS analysis}
 
 Multiple \ac{qv} protocols can be combined to generate progressively filtered datasets tailored to specific analytical needs. Often, different \ac{qv} sets are applied sequentially, with the final outcomes merged to address distinct objectives. For instance, a comprehensive analysis pipeline might integrate:
 \begin{itemize}
-  \item \colorbox{kispiblue!30}{\texttt{QV SNV/INDEL}}  \ac{snvindel},
-  \item \colorbox{kispiblue!30}{\texttt{QV CNV}} \ac{cnv},
-  \item \colorbox{kispiblue!30}{\texttt{QV structural variation}},
-  \item \colorbox{kispiblue!30}{\texttt{QV rare disease known}}, and 
-  \item \colorbox{kispiblue!30}{\texttt{QV statistical association \ac{qc}}}.
+  \item \colorbox{kispiblue!05}{\texttt{QV SNV/INDEL}}  \ac{snvindel},
+  \item \colorbox{kispiblue!05}{\texttt{QV CNV}} \ac{cnv},
+  \item \colorbox{kispiblue!05}{\texttt{QV structural variation}},
+  \item \colorbox{kispiblue!05}{\texttt{QV rare disease known}}, and 
+  \item \colorbox{kispiblue!05}{\texttt{QV statistical association \ac{qc}}}.
 \end{itemize}
 The final analysis yields (1) a joint cohort disease association (e.g. variant P-values) and (2) individual single-case results (e.g. clinical genetics diagnosis for a patient)
 \cite{auwera_genomics_2020, li2025statistical}.
-As an example, we focus on a SNV/INDEL pipeline employing two \ac{qv} sets:
-\colorbox{colorSUNSET2!60}{\texttt{QV SNV INDEL 1}} for flexible cohort-level filtering, and 
-\colorbox{colorSUNSET2!60}{\texttt{QV SNV INDEL 2}} for stricter filtering in subsequent single-case analysis. The pipeline is illustrated in \textbf{Box \ref{box:pipe}}, and can be summarised as follows:
+As an example, in 
+\textbf{Figure \ref{fig:qv_pipeline_with_file_vcurrent_guru_case_study_result} (A)}
+we focus on a SNV/INDEL pipeline employing two \ac{qv} sets:
+\colorbox{colorSUNSET2!20}{\texttt{QV SNV INDEL 1}} for flexible cohort-level filtering, and 
+\colorbox{colorSUNSET2!20}{\texttt{QV SNV INDEL 2}} for stricter filtering in subsequent single-case analysis. The pipeline is illustrated in \textbf{Box \ref{box:pipe}}, and can be summarised as follows:
 
 ``A cohort of patient WGS data was analysed to identify genetic determinants for phenotype X. Initially, a flexible \ac{qv} set was applied using the 
-\colorbox{colorSUNSET1!30}{\texttt{pipeline DNA SNV INDEL v1}}, which implements the \colorbox{colorSUNSET2!60}{\texttt{QV SNV INDEL 1}} criteria to produce the prepared dataset (\colorbox{colorSUNSET3!30}{\texttt{dataset DNA SNV INDEL v1}}). This dataset was then analysed alongside other modules (e.g. \colorbox{colorSUNSET4!30}{\texttt{PCA SNV INDEL v1}} and \colorbox{colorSUNSET5!30}{\texttt{statistical genomics v1}}) to derive a cohort-level association signal (Result 1). Next, the same prepared dataset was re-filtered with the stricter \colorbox{colorSUNSET2!60}{\texttt{QV SNV INDEL 2}} criteria to identify known causal variants for each patient, yielding the final dataset (\colorbox{colorSUNSET3!30}{\texttt{dataset DNA SNV INDEL v2}}) and resulting in individual case reports (Result 2).''
+\colorbox{colorSUNSET1!10}{\texttt{pipeline DNA SNV INDEL v1}}, which implements the \colorbox{colorSUNSET2!20}{\texttt{QV SNV INDEL 1}} criteria to produce the prepared dataset (\colorbox{colorSUNSET3!10}{\texttt{dataset DNA SNV INDEL v1}}). This dataset was then analysed alongside other modules (e.g. \colorbox{colorSUNSET4!10}{\texttt{PCA SNV INDEL v1}} and \colorbox{colorSUNSET5!10}{\texttt{statistical genomics v1}}) to derive a cohort-level association signal (Result 1). Next, the same prepared dataset was re-filtered with the stricter \colorbox{colorSUNSET2!20}{\texttt{QV SNV INDEL 2}} criteria to identify known causal variants for each patient, yielding the final dataset (\colorbox{colorSUNSET3!10}{\texttt{dataset DNA SNV INDEL v2}}) and resulting in individual case reports (Result 2).''
 
 \begin{tcolorbox}[
     colback=white!0,
@@ -182,15 +231,15 @@ As an example, we focus on a SNV/INDEL pipeline employing two \ac{qv} sets:
     title=\textbf{\refstepcounter{myboxcounter}\label{box:pipe}Box \themyboxcounter: Example diagrammatic representation}
 ]
 \dirtree{%
-.1 \colorbox{colorSUNSET1!30}{\texttt{pipeline DNA SNV INDEL v1}}.
+.1 \colorbox{colorSUNSET1!10}{\texttt{pipeline DNA SNV INDEL v1}}.
 .2 Flexible \ac{qv} criteria.
-.3 \colorbox{colorSUNSET2!60}{\texttt{QV SNV INDEL 1}} $\rightarrow$ \colorbox{colorSUNSET3!30}{\texttt{dataset DNA SNV INDEL v1}}.
-.4 \colorbox{colorSUNSET4!30}{\texttt{PCA SNV INDEL v1}}.
-.4 \colorbox{colorSUNSET5!30}{\texttt{statistical genomics v1}} $\rightarrow$ Result 1.
-.3 \colorbox{colorSUNSET3!30}{\texttt{dataset DNA SNV INDEL v1}}.
+.3 \colorbox{colorSUNSET2!20}{\texttt{QV SNV INDEL 1}} $\rightarrow$ \colorbox{colorSUNSET3!10}{\texttt{dataset DNA SNV INDEL v1}}.
+.4 \colorbox{colorSUNSET4!10}{\texttt{PCA SNV INDEL v1}}.
+.4 \colorbox{colorSUNSET5!10}{\texttt{statistical genomics v1}} $\rightarrow$ Result 1.
+.3 \colorbox{colorSUNSET3!10}{\texttt{dataset DNA SNV INDEL v1}}.
 .4 Rare disease \ac{qv} criteria.
-.5 \colorbox{colorSUNSET2!60}{\texttt{QV SNV INDEL 2}} $\rightarrow$ \colorbox{colorSUNSET3!30}{\texttt{dataset DNA SNV INDEL v2}}.
-.6 \colorbox{colorSUNSET5!30}{\texttt{single case report SNV INDEL v1}} $\rightarrow$ Result 2.
+.5 \colorbox{colorSUNSET2!20}{\texttt{QV SNV INDEL 2}} $\rightarrow$ \colorbox{colorSUNSET3!10}{\texttt{dataset DNA SNV INDEL v2}}.
+.6 \colorbox{colorSUNSET5!10}{\texttt{single case report SNV INDEL v1}} $\rightarrow$ Result 2.
 .3 Joint analysis output.
 }
 \medskip
@@ -203,18 +252,24 @@ Result 2 = Single variant report per patient.
 
 \subsection{Usage in a Validation Study}
 
-In the following validation study, we demonstrate that standardised \ac{qv} criteria achieve a 100\% match in criterion application when compared to the conventional manual approach. This analysis was performed on a rare disease cohort of 940 individuals (lawless spss 2025), which had been pre-processed for \ac{qc} and filtered using a minimal \ac{qv} test set, as described previously. Initially, we implemented an \ac{acmg} variant classification protocol \cite{richards2015standards} manually. We then re-implemented the same protocol using the new standardised \ac{qv} criteria in YAML format. Our findings confirm that both methods produce identical results.
+In the following validation study, we demonstrate that standardised \ac{qv} criteria achieve a 100\% match in criterion application when compared to the conventional manual approach. This analysis was performed on an in-house rare disease cohort of 940 individuals, which had been pre-processed for \ac{qc} and filtered using a minimal \ac{qv} test set.
+%, as described previously.
+Initially, we implemented an \ac{acmg} variant classification protocol \cite{richards2015standards} manually. We then re-implemented the same protocol using the new standardised \ac{qv} criteria in YAML format. Our findings confirm that both methods produce identical results.
 
-For ease of reporting, this example was restricted to chromosome 1, which contained 596 \ac{qv} after strict filtering (\ac{maf} $< 0.01$) and was limited to known disease genes based on the Genomics England panel ``Primary immunodeficiency or monogenic inflammatory bowel disease,'' retrieved using our PanelAppRex R repository (\url{https://github.com/DylanLawless/PanelAppRex}).
+We used genome-wide set of variants which was filtering to target rare varaints (\ac{maf} $< 0.01$) restricted to known disease genes based on the Genomics England panel ``Primary immunodeficiency or monogenic inflammatory bowel disease,'' retrieved using our PanelAppRex R repository (\url{https://github.com/DylanLawless/PanelAppRex}) 
+\cite{lawless_panelapprex_2025}. 
+This provided us with 6026 candidate variants annotated with 376 information sources.
 
-The annotation interpretation dataset was prepared in R using GuRu, our variant interpretation tool that consolidates all annotation sources and scores variants as candidate causal. The dataset, imported from gVCF format (output by VEP), consisted of 596 variant rows and 377 annotation columns. 
+The annotation interpretation dataset was prepared in R using GuRu, our variant interpretation tool that consolidates all annotation sources and scores variants as candidate causal. The dataset was imported from gVCF format as output by \ac{vep}.
 % A subset of key annotations used for \ac{qv} is illustrated in \textbf{Figure \ref{fig:qv_pipeline_with_file_vcurrent_guru_case_study_result}}.
 
-We selected the first eight \ac{acmg} criteria for assigning pathogenicity scores to variants \cite{richards2015standards}; six of these were relevant for this cohort. First, the analysis was performed manually by hard-coding each criterion in the pipeline script, reflecting a typical workflow. Second, the same criteria were imported from the \ac{qv} YAML file for the new standardised approach. The outputs from both methods were captured and compared, as shown in \textbf{Figure \ref{fig:qv_pipeline_with_file_vcurrent_guru_case_study_result}}. The \ac{qv} criteria were provided in YAML format in the file \texttt{qv\_files/acmg\_criteria.yaml} 
+We selected the first eight \ac{acmg} criteria for assigning pathogenicity scores to variants \cite{richards2015standards}; six of these were relevant for this cohort. First, the analysis was performed manually by hard-coding each criterion in the pipeline script, reflecting a typical workflow. Second, the same criteria were imported from the \ac{qv} YAML file for the new standardised approach. The outputs from both methods were captured and compared.
+The \ac{qv} criteria were provided in YAML format in the file \texttt{qv\_files/acmg\_criteria.yaml} 
 (see \textbf{Box \ref{box:acmg_criteria_yaml}}).
 
-Individual steps within the \ac{qv} criteria can be further classified for organisational purposes using simple labels such as “QC” and “filter”. For example, filtering thresholds (e.g. allele frequency > 0.1 in a cohort, < 0.1 in gnomAD) may be applied directly to exclude variants, while annotation-based criteria (e.g. QC flags) might not remove variants outright but instead inform downstream analyses that integrate multiple \ac{qv} filters.
+Additional details of the YAML criteria in this \ac{qv} set include definitions for \texttt{ACMG\_PS1} (identifying previously established pathogenic amino acid changes), \texttt{ACMG\_PS3} (supporting functional studies with matching inheritance patterns), and \texttt{ACMG\_PS5} (covering compound heterozygosity with high-impact variants). The criteria for \texttt{ACMG\_PM2} and \texttt{ACMG\_PM3} assess variant frequency and in trans occurrences, respectively, while \texttt{PS2} and \texttt{PS4} were not applicable to this cohort.
 
+Individual steps within the \ac{qv} criteria can be further classified for organisational purposes using simple labels such as ``QC'' and ``filter''. For example, filtering thresholds (e.g. allele frequency > 0.1 in a cohort, < 0.1 in gnomAD) may be applied directly to exclude variants, while annotation-based criteria (e.g. QC flags) might not remove variants outright but instead inform downstream analyses that integrate multiple \ac{qv} filters.
 
 \begin{tcolorbox}[
     colback=white!0,
@@ -225,8 +280,10 @@ Individual steps within the \ac{qv} criteria can be further classified for organ
     title=\textbf{\refstepcounter{myboxcounter}\label{box:acmg_criteria_yaml}Box \themyboxcounter: qv\_files/acmg\_criteria.yaml}
 ]
 \begin{verbatim}
-ACMG_PVS1:
-  description: >
+qv_set_id: acmg_sf_v3.2
+
+acmg_pvs1:
+  description_technical: >
     Null variants (IMPACT = HIGH) in genes where 
     loss-of-function causes disease.
     Includes homozygous variants, dominant inheritance, 
@@ -251,31 +308,15 @@ acmg_criteria.yaml
 \section{Results}
 \subsection{Validation Case Study}
 
-We validated our ACMG-based \ac{qv} protocol using a rare disease cohort of 940 individuals (Lawless SPSs 2025). For ease of demonstrating here, were pre-processed with stringent filtering (\ac{maf} $<$ 0.01) to isolate 596 variants on chromosome 1 in known disease genes (as defined by the Genomics England panel from our PanelAppRex repository). 
+We validated our \ac{qv} protocol using \ac{acmg}-based criteria for a rare disease cohort of 940 individuals. 
 We then conducted the variant classification using two approaches: a conventional manual method with hard-coded criteria, and our new YAML-based implementation
-Annotation data were processed in R with GuRu, our variant interpretation tool, where key annotations (377 columns) were used to assign pathogenicity scores based on the first eight ACMG criteria (six applicable to this cohort).
-As shown in \textbf{Figure \ref{fig:qv_pipeline_with_file_vcurrent_guru_case_study_result}}, 
+As shown in \textbf{Figure \ref{fig:qv_pipeline_with_file_vcurrent_guru_case_study_result} (B)}, 
 the outputs from both methods were identical, demonstrating a 100\% match. This confirms that our standardised, shareable \ac{qv} criteria can be imported and applied programmatically with equivalent accuracy, providing a reproducible resource that is adaptable across different pipelines and programming environments.
-
-Additional details of the YAML criteria in this \ac{qv} set include definitions for \texttt{ACMG\_PS1} (identifying previously established pathogenic amino acid changes), \texttt{ACMG\_PS3} (supporting functional studies with matching inheritance patterns), and \texttt{ACMG\_PS5} (covering compound heterozygosity with high-impact variants). The criteria for \texttt{ACMG\_PM2} and \texttt{ACMG\_PM3} assess variant frequency and in trans occurrences, respectively, while \texttt{PS2} and \texttt{PS4} were not applicable to this cohort.
 %Figure~\ref{fig:guru_case_study_guruscores} illustrates 
-The final annotation results in this pipeline allow for automated retrieval of top candidate pathogenic variants using ACMG scoring methods \cite{richards2015standards, tavtigian2020fitting}.
+The final annotation results in this pipeline allow for automated retrieval of top candidate pathogenic variants using \ac{acmg} scoring methods \cite{richards2015standards, tavtigian2020fitting}.
 
-\begin{figure}[!h]
-    \centering
-   \includegraphics[width=0.75\textwidth]{./images/qv_pipeline_with_file_vcurrent.pdf}
-   \includegraphics[width=0.75\textwidth]{./images/Guru_singlecase_validation_of_yaml_vs_manual.pdf}
-    \caption{Summary of QV application for a WGS pipeline. Top: \ac{qv}1 and \ac{qv}2 are shown as sequential and potentially piped protocol steps. The description file (non-mandatory) and the variables file (mandatory) form part of the QV files that are loaded by the analysis pipeline. This illustration highlights a single stage in the QV1 set (i.e. step 10 where the GATK VQSR method is applied), with the full pipeline simplified under the QV1 icon.
-    Bottol: GuRu case study using an \ac{acmg} criteria subset, demonstrating a 100\% match between manually encoded and standardised YAML-based methods (\texttt{qv\_files/acmg\_criteria.yaml}) for assigning pathogenicity scores.}
-    \label{fig:qv_pipeline_with_file_vcurrent_guru_case_study_result}
-\end{figure}
-
-
-\FloatBarrier
-
-
- 
-\section{Conclusions}
+\section{Summary}
+This paper introduces a standardised framework for integrating qualifying variants into genomic analysis pipelines, enhancing reproducibility, interpretability and the seamless translation of research findings into clinical practice.
 
 \section{Funding}
 This project was supported through the grant NDS-2021-911 (SwissPedHealth) from the Swiss Personalized Health Network and the Strategic Focal Area 'Personalized Health and Related Technologies' of the ETH Domain (Swiss Federal Institutes of Technology).
@@ -285,14 +326,14 @@ Acknowledgements We would like to thank all the patients and families who have b
 
 \section{Contributions}
 DL designed the work and contributed to the manuscript.
-AS, SB, VS, SÖ, JA contributed to the manuscript.
-JF, JV, LJS supervised the work and applied for funding.
+AS, SB, VS, DH, SÖ, JA contributed to the manuscript.
+JF, SF, LJS supervised the work, manuscript, and applied for funding.
 
 \section{Competing interests}
 None declared.
 
-\section{Collaborators}
-The SwissPedHealth consortium may be named here for publication and is prepared as a comment in the LaTeX document.
+%\section{Collaborators}
+%The SwissPedHealth consortium may be named here for publication and is prepared as a comment in the LaTeX document.
 % SwissPedHealth consortium: Andrea Agostini (Department of Computer Science, Institute for Machine Learning, ETH Zurich, Zurich, Switzerland), Anita Rauch (Institute of Medical Genetics, University of Zurich, Zurich, Switzerland), Anna Hartung (Inselspital, Bern University Hospital, University of Bern, Switzerland), Audrey van Drogen (PHRT Swiss Multi-Omics Centre [SMOC], ETH Zurich, Zurich, Switzerland \& Institute of Translational Medicine [ITM], Department of Health Sciences and Technology [D-HEST], ETH Zurich, Zurich, Switzerland), Aurélie Martin Necker (Patient and Family Advisory Committee, SwissPedHealth), Ben D Spycher (Institute of Social and Preventive Medicine [ISPM], University of Bern, Bern, Switzerland), Christian Kahlert (Ostschweizer Kinderspital, St Gallen, Switzerland), Christopher B Forrest (Center for Applied Clinical Research, Children’s Hospital of Philadelphia, Philadelphia, USA), Claudia E Kuehni (Institute of Social and Preventive Medicine [ISPM], University of Bern, Bern, Switzerland \& Division of Paediatric Respiratory Medicine and Allergology, Children's University Hospital, Inselspital, University of Bern, Bern, Switzerland), Cornelia Hagman (Department of Intensive Care and Neonatology and Children’s Research Centre, University Children’s Hospital Zurich, University of Zurich, Zurich, Switzerland), D Sean Froese (Division of Metabolism and Children’s Research Centre, University Children’s Hospital Zurich, University of Zurich, Zurich, Switzerland), Daphné Chopard (Department of Computer Science, Institute for Machine Learning, ETH Zurich, Zurich, Switzerland \& Department of Intensive Care and Neonatology and Children’s Research Centre, University Children’s Hospital Zurich, University of Zurich, Zurich, Switzerland), Dylan Lawless (School of Life Sciences, Ecole Polytechnique Fédérale de Lausanne, Lausanne, Switzerland \& Department of Intensive Care and Neonatology and Children’s Research Centre, University Children’s Hospital Zurich, University of Zurich, Zurich, Switzerland), Effy Vayena (Department of Health Sciences and Technology, Institute of Translational Medicine, ETH Zurich, Zurich, Switzerland), Eirini I Petrou (Department of Health Sciences and Technology, Institute of Translational Medicine, ETH Zurich, Zurich, Switzerland), Emanuele Palumbo (Department of Computer Science, Institute for Machine Learning, ETH Zurich, Zurich, Switzerland), Eric Giannoni (Clinic of Neonatology, Lausanne University Hospital, University of Lausanne, Lausanne, Switzerland), Fabiën N Belle (Institute of Social and Preventive Medicine [ISPM], University of Bern, Bern, Switzerland), Ioannis Xenarios (PHRT Swiss Multi-Omics Centre [SMOC], EPFL, Lausanne, Switzerland \& Department of Computational Biology, University of Lausanne, Lausanne, Switzerland \& Health 2030 Genome Center, Foundation Campus Biotech, Geneva, Switzerland), Jacques Fellay (School of Life Sciences, Ecole Polytechnique Fédérale de Lausanne, Lausanne, Switzerland \& Biomedical Data Science Center, Lausanne University Hospital, University of Lausanne, Lausanne, Switzerland), Jana Pachlopnik Schmid (Division of Immunology and Children’s Research Centre, University Children’s Hospital Zurich, University of Zurich, Zurich, Switzerland), Julia A Bielicki (Paediatric Research Center, University Children's Hospital Basel [UKBB], University of Basel, Basel, Switzerland \\& Centre for Neonatal and Paediatric Infection, St George’s, University of London, London, UK), Julia E Vogt (Department of Computer Science, Institute for Machine Learning, ETH Zurich, Zurich, Switzerland), Kathrin Hofmann (Patient and Family Advisory Committee, SwissPedHealth), Katrin Männik (PHRT Swiss Multi-Omics Centre [SMOC], EPFL, Lausanne, Switzerland \\& Center for Integrative Genomics, University of Lausanne, Lausanne, Switzerland \& Health 2030 Genome Center, Foundation Campus Biotech, Geneva, Switzerland), Keith Harshman (PHRT Swiss Multi-Omics Centre [SMOC], EPFL, Lausanne, Switzerland \& Health 2030 Genome Center, Foundation Campus Biotech, Geneva, Switzerland), Kelly Ormond (Department of Health Sciences and Technology, Institute of Translational Medicine, ETH Zurich, Zurich, Switzerland \& Department of Genetics, Stanford University School of Medicine, Stanford, California, USA), Klara Posfay-Barbe (Hôpitaux Universitaires de Genève, Geneva, Switzerland), Léa Ho Dac (Division of Paediatric Respiratory Medicine and Allergology, Department of Paediatrics, Inselspital, Bern University Hospital, University of Bern, Switzerland), Lorenz M Leuenberger (Institute of Social and Preventive Medicine [ISPM], University of Bern, Bern, Switzerland), Luregn J Schlapbach (Department of Intensive Care and Neonatology and Children’s Research Centre, University Children’s Hospital Zurich, University of Zurich, Zurich, Switzerland \& Child Health Research Centre, The University of Queensland, Brisbane, Australia), Manon Jaboyedoff (Pediatric Infectious Diseases and Vaccinology Unit, Service of Pediatrics, Department Mother-Woman-Child, Lausanne University Hospital and University of Lausanne, Lausanne, Switzerland), Mariam Ait Oumelloul (School of Life Sciences, Ecole Polytechnique Fédérale de Lausanne, Lausanne, Switzerland), Martin Stocker (Luzerner Kantonsspital, Luzern, Switzerland), Matthias R Baumgartner (Division of Metabolism and Children’s Research Centre, University Children’s Hospital Zurich, University of Zurich, Zurich, Switzerland), Nicola Zamboni (PHRT Swiss Multi-Omics Centre [SMOC], ETH Zurich, Zurich \& Institute of Molecular Systems Biology, ETH Zurich, Zurich, Switzerland), Nicole Goebel (Research and Analyses Services, Digitalisation \& ICT Division, University Hospital Basel, Basel, Switzerland), Patrick G A Pedrioli (PHRT Swiss Multi-Omics Centre [SMOC], ETH Zurich, Zurich, Switzerland \& Institute of Translational Medicine [ITM], Department of Health Sciences and Technology [D-HEST], ETH Zurich, Zurich, Switzerland \& Swiss Institute of Bioinformatics, Lausanne, Switzerland \& Department of Biology, Institute of Molecular Systems Biology, Swiss Federal Institute of Technology/ETH Zürich, Zurich, Switzerland), Philipp Latzin (Division of Paediatric Respiratory Medicine and Allergology, Department of Paediatrics, Inselspital, Bern University Hospital, University of Bern, Switzerland), Rebeca Mozun (Department of Intensive Care and Neonatology and Children’s Research Centre, University Children’s Hospital Zurich, University of Zurich, Zurich, Switzerland), Roger Lauener (Ostschweizer Kinderspital, St Gallen, Switzerland), Sandra Goetze (PHRT Swiss Multi-Omics Centre [SMOC], ETH Zurich, Zurich, Switzerland \& Institute of Translational Medicine [ITM], Department of Health Sciences and Technology [D-HEST], ETH Zurich, Zurich, Switzerland), Seraina Prader (Division of Immunology and Children’s Research Centre, University Children’s Hospital Zurich), Simon Boutry (School of Life Sciences, Ecole Polytechnique Fédérale de Lausanne, Lausanne, Switzerland), Sven Schulzke (Department of Neonatology, University Children's Hospital Basel [UKBB], University of Basel, Basel, Switzerland), Tatjana Welzel (Paediatric Research Center, University Children's Hospital Basel [UKBB], University of Basel, Basel, Switzerland), Thomas M Sutter (Department of Computer Science, Institute for Machine Learning, ETH Zurich, Zurich, Switzerland), Varvara Dimopoulou (Clinic of Neonatology, Lausanne University Hospital and University of Lausanne, Lausanne, Switzerland), Vito RT Zanotelli (Division of Metabolism and Children’s Research Centre, University Children’s Hospital Zurich, University of Zurich, Zurich, Switzerland), Xeni Deligianni (Research and Analyses Services, Digitalisation \& ICT Division, University Hospital Basel, Basel, Switzerland), Xenia Bovermann (Division of Paediatric Respiratory Medicine and Allergology, Department of Paediatrics, Inselspital, Bern University Hospital, University of Bern, Switzerland), Yara Shoman (Institute of Social and Preventive Medicine [ISPM], University of Bern, Bern, Switzerland).
 
 \clearpage

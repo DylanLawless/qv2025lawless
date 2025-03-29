@@ -3,7 +3,8 @@ library(dplyr)
 
 # The following code runs a function on each filtering method and saves the counts of criteria applied.
 # We then compare the check of there is complete overlap as validation. 
-# Here is the method in more readable terma for just one criteria set:
+
+# Here is the method in more readable form for just one criteria set:
 # source("./guru_signlecase_vcurrent.R")
 # source("./ACMG_filters/qv_acmg_filters.R")
 # pvs1_table <- table(df$ACMG_PVS1)
@@ -23,8 +24,6 @@ library(dplyr)
 # validation_qv <- bind_rows(psv1_df, ps1_df, ps3_df, ps5_df, pm2_df, pm3_df)
 # validation_qv$method <- "QV_yaml"
 # print(validation_qv)
-
-
 
 # Function to apply ACMG filtering and generate validation data
 run_validation <- function(filter_script, method_name) {
@@ -64,7 +63,7 @@ validation_combined$Criterion <- factor(validation_combined$Criterion, levels = 
 
 p_validation <- ggplot(validation_combined, aes(x = as.factor(Var1), y = Count, fill = method)) +
   geom_bar(stat = "identity", position = "dodge", color = "black") +
-  scale_y_continuous(expand = expansion(mult = 0.8)) + 
+  scale_y_continuous(expand = expansion(mult = c(0, 0.9)), limits = c(0, NA)) + 
   geom_text(aes(label = Count), 
             position = position_dodge(width = 0.9), 
             vjust = -0.5, size = 4) +
@@ -73,14 +72,14 @@ p_validation <- ggplot(validation_combined, aes(x = as.factor(Var1), y = Count, 
   labs(x = "ACMG score applied during criteria check", y = "Count of variants lablled", fill = "Method",
        title = "Comparison of ACMG criteria counts on disease cohort",
        subtitle = "QV acmg_criteria.yaml vs Manually encoded") +
-  theme_minimal() 
+  theme_minimal()
 
 p_validation
 print(validation_combined)
 print(dim(df))
-ggsave(paste(images_directory ,file_suffix, "validation_of_yaml_vs_manual.pdf", sep = "") ,plot = p_validation, width = 8, height = 4)
+ggsave(paste(images_directory ,file_suffix, "validation_of_yaml_vs_manual.pdf", sep = "") ,plot = p_validation, width = 8, height = 3.5)
 
 
 
-
+dim(df)
 

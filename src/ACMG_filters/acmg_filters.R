@@ -1,10 +1,9 @@
 library(yaml)
 library(dplyr)
 
-acmg_criteria <- yaml::read_yaml("./qv_files/acmg_criteria.yaml")
+# acmg_criteria <- yaml::read_yaml("./qv_files/acmg_criteria.yaml")
+acmg_criteria <- yaml::read_yaml("./qv_files/qv_acmg_svnindel_criteria_20250225.yaml")
 acmg_criteria
-
-
 
 # acmg_filters ----
 print("We are adding PS3 now")
